@@ -2,18 +2,15 @@ import { Order } from "src/order/order.entity";
 import { Column, Entity, PrimaryGeneratedColumn, OneToMany } from "typeorm";
 
 @Entity()
-export class Product {
+export class User {
     @PrimaryGeneratedColumn()
     id: number
 
-    @Column()
-    name: string
-
-    @Column('decimal')
-    price: number
+    @Column({unique: true})
+    email: string
 
     @Column()
-    description: string;
+    password: string
 
     @OneToMany(()=> Order, (order) => order.user)
     orders: Order[]

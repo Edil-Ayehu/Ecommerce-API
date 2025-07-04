@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { Product } from './product.entity';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -7,7 +7,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 export class ProductService {
     constructor(
         @InjectRepository(Product)
-        private readonly productRepository: Repository<Product>
+        private productRepository: Repository<Product>
     ) {}
 
     create(data: Partial<Product>){
@@ -19,6 +19,6 @@ export class ProductService {
     }
 
     findOne(id: number){
-        return this.productRepository.findOne({where: {id}})
+        return  this.productRepository.findOne({where: {id}})
     }
 }
