@@ -4,6 +4,7 @@ import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
+import { ProductModule } from './product/product.module';
 
 @Module({
   imports: [TypeOrmModule.forRootAsync({
@@ -17,7 +18,7 @@ import { AuthModule } from './auth/auth.module';
       autoLoadEntities: true,
       synchronize: true, // disable in production
     })
-  }), UsersModule, AuthModule],
+  }), UsersModule, AuthModule, ProductModule],
   controllers: [AppController],
   providers: [AppService],
 })
