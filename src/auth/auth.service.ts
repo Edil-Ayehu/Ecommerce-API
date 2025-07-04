@@ -1,0 +1,51 @@
+import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { UsersService } from 'src/users/users.service';
+import { Repository } from 'typeorm';
+import * as bcrypt from 'bcrypt';
+import * as jwt from 'jsonwebtoken';
+
+const JWT_SECRET = 'thisIsMyJWTSecretCode'; // Ideally use config service
+
+@Injectable()
+export class AuthService {
+    constructor(
+        private readonly usersService: UsersService,
+    ){}
+
+    async register(user: {email: string, password:string}) {
+        const existing = await this.usersService.findByEmail(user.email)
+
+        if(existing) {
+            throw new UnauthorizedException("Email already in use")
+        }
+
+        const hashedPassword = await bcrypt.hash(user.password, 10);
+        const newUser = await this.usersService.create({email: user.email, password: hashedPassword})
+        return {id: newUser.id, email: newUser.email}
+    }
+
+    async login(email:string, password: string) {
+        const user = await this.usersService.findByEmail(email)
+        if(!user) throw new UnauthorizedException('Invalid credentials')
+        
+        const match = await bcrypt.compare(password, user.password);
+        if(!match) throw new UnauthorizedException('The password is incorrect.please try again!')
+        
+        const token = jwt.sign(
+            {sub: user.id, email: user.email}, 
+            JWT_SECRET, 
+            {expiresIn: '7d'},
+        );
+
+        return {'access_token' : token}
+    }
+
+    //
+    verityToken(token: string) {
+        try {
+            return jwt.verify(token, JWT_SECRET);
+        } catch(e) {
+            throw new UnauthorizedException("Invalid token")
+        }
+    }
+}
