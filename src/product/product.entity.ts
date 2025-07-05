@@ -12,8 +12,11 @@ export class Product {
     @Column('decimal')
     price: number
 
-    @Column()
-    description: string;
+    @Column({
+        type: 'text',
+        nullable: true,
+    })
+    description?: string;
 
     @OneToMany(()=> Order, (order) => order.user)
     orders: Order[]
