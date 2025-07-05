@@ -7,7 +7,7 @@ export class ProductController {
         private readonly productService: ProductService
     ) {}
 
-    @Post()
+    @Post('create-product')
     create(@Body() body: {name:string, price:number, description:string}) {
         return this.productService.create(body)
     }
