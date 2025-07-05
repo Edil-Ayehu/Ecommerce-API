@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Headers, Delete, Get } from '@nestjs/common';
+import { Body, Controller, Post, Headers, Delete, Get, Param, ParseIntPipe } from '@nestjs/common';
 import { CartService } from './cart.service';
 import { AuthService } from 'src/auth/auth.service';
 import { AddCartItemDto } from './dto/add-cart-item.dto';
@@ -21,8 +21,12 @@ export class CartController {
         return this.cartService.add(+payload.sub!, addCartItemDto.productId, addCartItemDto.quantity)
     }
 
-    @Delete('removeFromCart')
-    remove(@Body() productId: number, @Headers('authorization') auth:string,) {
+    @Delete('removeFromCart/:productId')
+    remove(
+        // @Body() productId: number, 
+        @Param('productId', ParseIntPipe) productId: number,
+        @Headers('authorization') auth:string,
+    ) {
         const token = auth?.split(' ')[1]
         const payload = this.authService.verifyToken(token)
 
