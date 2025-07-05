@@ -6,6 +6,7 @@ import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { ProductModule } from './product/product.module';
 import { OrderModule } from './order/order.module';
+import { WishlistModule } from './wishlist/wishlist.module';
 
 @Module({
   imports: [TypeOrmModule.forRootAsync({
@@ -19,7 +20,7 @@ import { OrderModule } from './order/order.module';
       autoLoadEntities: true,
       synchronize: true, // disable in production
     })
-  }), UsersModule, AuthModule, ProductModule, OrderModule],
+  }), UsersModule, AuthModule, ProductModule, OrderModule, WishlistModule],
   controllers: [AppController],
   providers: [AppService],
 })
