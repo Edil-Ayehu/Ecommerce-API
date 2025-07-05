@@ -21,7 +21,7 @@ export class AuthController {
     @Get('profile')
     async profile(@Headers('authorization') auth: string) {
         const token = auth?.replace("Bearer",'');
-        const payload = this.authService.verityToken(token)
+        const payload = this.authService.verifyToken(token)
         return { user: payload}
     }
 }

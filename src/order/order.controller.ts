@@ -14,18 +14,18 @@ export class OrderController {
 
     @Post('create-order')
     async create(@Body() body: {productId: number, quantity: number}, @Headers('authorization') auth: string) {
-        const token = auth?.replace('Bearer', "");
+        const token = auth?.split(' ')[1];
 
-        const validToken = this.authService.verityToken(token)
-        if(!validToken) {
-            throw new UnauthorizedException("Invalid Token");
-        }
-        const payload: any = jwt.verify(token,JWT_SECRET);
-        return this.orderService.create(payload.sub, body.productId, body.quantity);
+        const payload = this.authService.verifyToken(token)
+
+        return this.orderService.create(+payload.sub!, body.productId, body.quantity);
     }
 
-    @Get()
-    findAll() {
+    @Get('get-all-orders')
+    findAll(@Headers('authorization') auth: string) {
+        const token = auth?.split(' ')[1];
+
+        const payload = this.authService.verifyToken(token)
         return this.orderService.findAll()
     }
 }
