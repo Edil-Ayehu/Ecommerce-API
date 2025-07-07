@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { Product } from './product.entity';
 import { InjectRepository } from '@nestjs/typeorm';
+import { PaginationDto } from 'src/common/dto/pagination.dto';
 
 @Injectable()
 export class ProductService {
@@ -14,13 +15,18 @@ export class ProductService {
         return this.productRepository.save(data)
     }
 
-    async findAll(page: number, limit: number){
+    async findAll(paginationDto:PaginationDto){
         const [data, total] = await this.productRepository.findAndCount({
-            skip: (page - 1) * limit,
-            take: limit,
+            skip: (paginationDto.page - 1) * paginationDto.limit,
+            take: paginationDto.limit,
         })
 
-        return {data,total,page,limit}
+        return {
+            data,
+            total,
+            page : paginationDto.page,
+            limit: paginationDto.limit,
+        }
     }
 
     findOne(id: number){
