@@ -20,12 +20,7 @@ export class ProductService {
             take: limit,
         })
 
-        return {
-            data,
-            total,
-            page,
-            limit
-        }
+        return {data,total,page,limit}
     }
 
     findOne(id: number){

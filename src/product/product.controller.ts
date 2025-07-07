@@ -1,6 +1,7 @@
 import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Query } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { CreateProductDto } from './dto/create-product.dto';
+import { PaginationDto } from 'src/common/dto/pagination.dto';
 
 @Controller('product')
 export class ProductController {
@@ -14,8 +15,8 @@ export class ProductController {
     }
 
     @Get('get-all-products')
-    findAll(@Query() query: {page: number, limit: number}) {
-        return this.productService.findAll(query.page, query.limit);
+    findAll(@Query() paginationDto: PaginationDto) {
+        return this.productService.findAll(paginationDto.page, paginationDto.limit);
     }
 
     @Get(':id')
