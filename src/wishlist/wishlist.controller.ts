@@ -31,7 +31,9 @@ export class WishlistController {
     }
 
     @Get('getAllWishlistItems')
-    findAllByUser(@Headers('authorization') auth: string) {
+    findAllByUser(
+        @Headers('authorization') auth: string,
+    ) {
         const token = auth?.split(" ")[1]
         const payload = this.authService.verifyToken(token)
         return this.wishlistService.findAllForUser(+payload.sub!)

@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { Wishlist } from './wishlist.entity';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -26,7 +26,7 @@ export class WishlistService {
     const product = await this.productService.findOne(productId)
 
     if(!product) {
-        throw new UnauthorizedException("Please login to add product to wishlist!")
+        throw new NotFoundException("No Product Found with the given Id!")
     }
 
     // save the product to wishlit
