@@ -14,11 +14,35 @@ export class ProductService {
         return this.productRepository.save(data)
     }
 
-    findAll(){
-        return this.productRepository.find()
+    async findAll(page: number, limit: number){
+        const [data, total] = await this.productRepository.findAndCount({
+            skip: (page - 1) * limit,
+            take: limit,
+        })
+
+        return {
+            data,
+            total,
+            page,
+            limit
+        }
     }
 
     findOne(id: number){
         return  this.productRepository.findOne({where: {id}})
+    }
+
+    async softDelete(id:number) {
+        const product = await this.productRepository.findOne({
+            where: {id}
+        });
+
+        if(!product) throw new NotFoundException("Product not found")
+
+        await this.productRepository.softDelete(id)
+        return {
+            id,
+            deleted: true,
+        }
     }
 }

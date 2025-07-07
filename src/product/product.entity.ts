@@ -1,5 +1,5 @@
 import { Order } from "src/order/order.entity";
-import { Column, Entity, PrimaryGeneratedColumn, OneToMany } from "typeorm";
+import { Column, Entity, PrimaryGeneratedColumn, OneToMany, CreateDateColumn, UpdateDateColumn, DeleteDateColumn } from "typeorm";
 
 @Entity()
 export class Product {
@@ -20,4 +20,13 @@ export class Product {
 
     @OneToMany(()=> Order, (order) => order.user)
     orders: Order[]
+
+    @CreateDateColumn()
+    createdAt: Date
+
+    @UpdateDateColumn()
+    updatedAt: Date
+
+    @DeleteDateColumn()
+    deletedAt: Date
 }

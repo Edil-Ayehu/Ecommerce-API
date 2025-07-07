@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, ParseIntPipe, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Query } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { CreateProductDto } from './dto/create-product.dto';
 
@@ -13,13 +13,18 @@ export class ProductController {
         return this.productService.create(createProductDto)
     }
 
-    @Get()
-    findAll() {
-        return this.productService.findAll();
+    @Get('get-all-products')
+    findAll(@Query() query: {page: number, limit: number}) {
+        return this.productService.findAll(query.page, query.limit);
     }
 
     @Get(':id')
     findOne(@Param('id', ParseIntPipe) id:number) {
         return this.productService.findOne(id)
+    }
+
+    @Delete('soft-delete/:id')
+    softDelete(@Param('id', ParseIntPipe) id:number) {
+        return this.productService.softDelete(id)
     }
 }
