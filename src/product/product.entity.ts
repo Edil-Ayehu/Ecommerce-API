@@ -18,7 +18,7 @@ export class Product {
     })
     description?: string;
 
-    @OneToMany(()=> Order, (order) => order.user)
+    @OneToMany(()=> Order, (order) => order.product)
     orders: Order[]
 
     @CreateDateColumn()

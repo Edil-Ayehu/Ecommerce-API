@@ -16,6 +16,6 @@ export class Cart {
     @ManyToOne(()=> User)
     user:User
 
-    @ManyToOne(()=> Product)
+    @ManyToOne(()=> Product, {onDelete: 'CASCADE'})
     product: Product
 }

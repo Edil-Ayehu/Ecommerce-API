@@ -46,4 +46,18 @@ export class ProductService {
             deleted: true,
         }
     }
+
+    async deleteProduct(id: number) {
+        const product = await this.productRepository.findOne({
+            where: {id}
+        });
+
+        if(!product) throw new NotFoundException("Product not found with the given product Id " + id)
+
+        await this.productRepository.delete(id)
+        return {
+            id,
+            deleted: true,
+        }
+    }
 }

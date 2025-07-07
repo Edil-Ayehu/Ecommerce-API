@@ -1,6 +1,6 @@
 import { Product } from "src/product/product.entity";
 import { User } from "src/users/user.entity";
-import { Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { CreateDateColumn, DeleteDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 @Entity()
 export class Wishlist {
@@ -10,6 +10,6 @@ export class Wishlist {
     @ManyToOne(()=> User)
     user:User
 
-    @ManyToOne(()=> Product)
+    @ManyToOne(()=> Product, { onDelete: 'CASCADE'})
     product: Product
 }

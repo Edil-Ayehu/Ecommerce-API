@@ -28,4 +28,10 @@ export class ProductController {
     softDelete(@Param('id', ParseIntPipe) id:number) {
         return this.productService.softDelete(id)
     }
+
+
+    @Delete('delete-product/:id')
+    deleteProduct(@Param('id', ParseIntPipe) id:number) {
+        return this.productService.deleteProduct(id)
+    }
 }
