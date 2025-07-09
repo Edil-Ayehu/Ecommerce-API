@@ -3,6 +3,7 @@ import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './user.entity';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
+import { RegisterDto } from 'src/auth/dto/register.dto';
 
 @Injectable()
 export class UsersService {
@@ -11,8 +12,8 @@ export class UsersService {
     private readonly usersRepository: Repository<User>,
   ) {}
 
-  async create(user: Partial<User>) {
-    return this.usersRepository.save(user);
+  async create(registerDto: RegisterDto) {
+    return this.usersRepository.save(registerDto);
   }
 
   async findAllUsers(paginationDto: PaginationDto) {
