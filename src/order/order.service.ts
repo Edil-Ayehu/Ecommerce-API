@@ -86,6 +86,7 @@ export class OrderService {
         const [data, total] = await this.orderRepository.findAndCount({
             skip: (paginationDto.page - 1) * paginationDto.limit,
             take: paginationDto.limit,
+            relations: ['user','items']
         });
 
         return {

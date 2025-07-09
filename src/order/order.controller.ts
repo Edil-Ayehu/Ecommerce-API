@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Headers, UnauthorizedException } from '@nestjs/common';
+import { Body, Controller, Get, Post, Headers, UnauthorizedException, Query } from '@nestjs/common';
 import { OrderService } from './order.service';
 import { AuthService } from 'src/auth/auth.service';
 import { CreateOrderDto } from './dto/create-order.dto';
@@ -38,7 +38,7 @@ export class OrderController {
     }
 
     @Get('get-all-orders')
-    findAllOrders(paginationDto: PaginationDto) {
+    findAllOrders(@Query() paginationDto: PaginationDto) {
         return this.orderService.findAllOrders(paginationDto);
     }
 }
