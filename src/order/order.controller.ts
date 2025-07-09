@@ -33,9 +33,11 @@ export class OrderController {
 
 
     @Post('checkout')
-    checkout(@Body() checkoutDto:CheckoutDto ,@Headers('authorization') auth: string) {
+    checkout(
+        @Body() checkoutDto:CheckoutDto ,
+        @Headers('authorization') auth: string,
+    ) {
         const token = auth?.split(' ')[1];
-
         const payload = this.authService.verifyToken(token)
 
         return this.orderService.checkout(+payload.sub!,checkoutDto)

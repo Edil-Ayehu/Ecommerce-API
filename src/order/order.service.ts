@@ -29,7 +29,7 @@ export class OrderService {
     async checkout(userId:number, dto: CheckoutDto) {
         const cartItems = await this.cartRepository.find({
             where: {user: {id: userId}},
-            relations: ['product']
+            relations: ['product','user']
         })
 
         if (cartItems.length === 0) {
