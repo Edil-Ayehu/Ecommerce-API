@@ -9,10 +9,11 @@ import { AuthModule } from 'src/auth/auth.module';
 import { CartModule } from 'src/cart/cart.module';
 import { Product } from 'src/product/product.entity';
 import { Cart } from 'src/cart/cart.entity';
+import { OrderItem } from './order-item.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Order, Product, Cart]),
+    TypeOrmModule.forFeature([Order,OrderItem, Product, Cart]),
     UsersModule,
     ProductModule,
     AuthModule,

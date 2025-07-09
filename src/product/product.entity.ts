@@ -1,4 +1,4 @@
-import { Order } from "src/order/order.entity";
+import { OrderItem } from "src/order/order-item.entity";
 import { Column, Entity, PrimaryGeneratedColumn, OneToMany, CreateDateColumn, UpdateDateColumn, DeleteDateColumn } from "typeorm";
 
 @Entity()
@@ -49,8 +49,8 @@ export class Product {
     })
     description?: string;
 
-    @OneToMany(()=> Order, (order) => order.product)
-    orders: Order[]
+    @OneToMany(()=> OrderItem, (orderItem) => orderItem.product)
+    orderItems: OrderItem[]
 
     @CreateDateColumn()
     createdAt: Date
