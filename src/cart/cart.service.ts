@@ -70,4 +70,20 @@ export class CartService {
         relations: ['product']
     })
   }
+
+  // clear all items in the user's cart
+  async clearCartForUser(userId: number) {
+    const items = await this.cartRepository.find({
+      where: {user: {id: userId}}
+    })
+
+    if (items.length > 0) {
+      await this.cartRepository.remove(items)
+    }
+
+    return {
+      message: "Cart cleared successfully",
+      removedItemsCount: items.length,
+    }
+  }
 }

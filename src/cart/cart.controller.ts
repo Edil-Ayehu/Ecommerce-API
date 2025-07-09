@@ -23,7 +23,6 @@ export class CartController {
 
     @Delete('removeFromCart/:productId')
     remove(
-        // @Body() productId: number, 
         @Param('productId', ParseIntPipe) productId: number,
         @Headers('authorization') auth:string,
     ) {
@@ -39,5 +38,13 @@ export class CartController {
         const payload = this.authService.verifyToken(token)
 
         return this.cartService.findAllForUser(+payload.sub!)
+    }
+
+    @Delete()
+    clearCartForUser(@Headers('authorization') auth:string) {
+        const token = auth?.split(' ')[1]
+        const payload = this.authService.verifyToken(token)
+
+        return this.cartService.clearCartForUser(+payload.sub!)
     }
 }

@@ -1,8 +1,8 @@
 import { Body, Controller, Get, Post, Headers, UnauthorizedException } from '@nestjs/common';
 import { OrderService } from './order.service';
-import * as jwt from 'jsonwebtoken'
 import { AuthService } from 'src/auth/auth.service';
 import { CreateOrderDto } from './dto/create-order.dto';
+import { CheckoutDto } from './dto/checkout.dto';
 
 const JWT_SECRET = 'thisIsMyJWTSecretCode';
 
@@ -28,6 +28,16 @@ export class OrderController {
         const token = auth?.split(' ')[1];
 
         const payload = this.authService.verifyToken(token)
-        return this.orderService.findAll()
+        return this.orderService.findAll(+payload.sub!)
+    }
+
+
+    @Post('checkout')
+    checkout(@Body() checkoutDto:CheckoutDto ,@Headers('authorization') auth: string) {
+        const token = auth?.split(' ')[1];
+
+        const payload = this.authService.verifyToken(token)
+
+        return this.orderService.checkout(+payload.sub!,checkoutDto)
     }
 }
