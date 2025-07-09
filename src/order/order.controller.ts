@@ -3,6 +3,7 @@ import { OrderService } from './order.service';
 import { AuthService } from 'src/auth/auth.service';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { CheckoutDto } from './dto/checkout.dto';
+import { PaginationDto } from 'src/common/dto/pagination.dto';
 
 const JWT_SECRET = 'thisIsMyJWTSecretCode';
 
@@ -13,22 +14,15 @@ export class OrderController {
         private readonly authService: AuthService
     ) {}
 
-    @Post('create-order')
-    async create(
-        @Body() createOrderDto: CreateOrderDto, 
-        @Headers('authorization') auth: string,
-    ) {
-        const token = auth?.split(' ')[1];
-        const payload = this.authService.verifyToken(token)
-        return this.orderService.create(+payload.sub!, createOrderDto.productId, createOrderDto.quantity);
-    }
 
-    @Get('get-all-orders')
-    findAll(@Headers('authorization') auth: string) {
+    @Get('get-my-orders')
+    findMyOrders(
+        @Body() paginationDto:PaginationDto,
+        @Headers('authorization') auth: string) {
         const token = auth?.split(' ')[1];
 
         const payload = this.authService.verifyToken(token)
-        return this.orderService.findAll(+payload.sub!)
+        return this.orderService.findMyOrders(+payload.sub!, paginationDto);
     }
 
 
@@ -41,5 +35,10 @@ export class OrderController {
         const payload = this.authService.verifyToken(token)
 
         return this.orderService.checkout(+payload.sub!,checkoutDto)
+    }
+
+    @Get('get-all-orders')
+    findAllOrders(paginationDto: PaginationDto) {
+        return this.orderService.findAllOrders(paginationDto);
     }
 }

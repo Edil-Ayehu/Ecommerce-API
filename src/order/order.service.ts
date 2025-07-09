@@ -9,6 +9,8 @@ import { CartService } from 'src/cart/cart.service';
 import { Product } from 'src/product/product.entity';
 import { Cart } from 'src/cart/cart.entity';
 import { OrderItem } from './order-item.entity';
+import { PaginationDto } from 'src/common/dto/pagination.dto';
+import { take } from 'rxjs';
 
 @Injectable()
 export class OrderService {
@@ -79,20 +81,36 @@ export class OrderService {
         }
     }
 
-    async create(userId:number, productId:number, quantity: number) {
-        const user = await this.usersSerivce.findById(userId)
-        if (!user) {
-            throw new NotFoundException('User not found with the given Id')
+    // this is for admin
+    async findAllOrders(paginationDto: PaginationDto) {
+        const [data, total] = await this.orderRepository.findAndCount({
+            skip: (paginationDto.page - 1) * paginationDto.limit,
+            take: paginationDto.limit,
+        });
+
+        return {
+            data,
+            page: paginationDto.page,
+            limit: paginationDto.limit,
+            total,
         }
-        const product = await this.productService.findOne(productId)
-        if (!product) {
-            throw new NotFoundException('User not found with the given Id')
-        }
-        return this.orderRepository.save({ user, product, quantity})
     }
 
-    findAll(userId: number) {
-        return this.orderRepository.find({relations: ['user', 'product']})
+
+    async findMyOrders(userId: number, paginationDto: PaginationDto) {
+        const [data, total] = await this.orderRepository.findAndCount({
+            where: {user: {id: userId}},
+            relations: ['user', 'items'],
+            skip: (paginationDto.page - 1) * paginationDto.limit,
+            take: paginationDto.limit,
+        })
+
+        return {
+            data,
+            page: paginationDto.page,
+            limit: paginationDto.limit,
+            total,
+        }
     }
 
     async generateOrderNumber(): Promise<string> {
