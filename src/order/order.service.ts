@@ -23,9 +23,6 @@ export class OrderService {
 
         @InjectRepository(Cart)
         private cartRepository: Repository<Cart>,
-
-        private usersSerivce: UsersService,
-        private productService: ProductService,
         private cartService: CartService,
     ){}
 
@@ -49,7 +46,7 @@ export class OrderService {
 
         for(const item of cartItems) {
             // optionally reduce stock
-            if (item.product.stock && item.product.stock < item.quantity) {
+            if (item.product.stock! < item.quantity) {
                 throw new BadRequestException(`Product ${item.product.name} does not have enough stock.`);
             }
 
