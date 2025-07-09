@@ -4,6 +4,7 @@ import { Cart } from './cart.entity';
 import { Repository } from 'typeorm';
 import { UsersService } from 'src/users/users.service';
 import { ProductService } from 'src/product/product.service';
+import { PaginationDto } from 'src/common/dto/pagination.dto';
 
 @Injectable()
 export class CartService {
@@ -64,11 +65,20 @@ export class CartService {
     }
   }
 
-  findAllForUser(userId: number) {
-    return this.cartRepository.find({
+  async findCartItems(userId: number, paginationDto: PaginationDto) {
+    const [data, total] = await this.cartRepository.findAndCount({
         where: {user: {id: userId}},
-        relations: ['product']
+        relations: ['product'],
+        skip: (paginationDto.page - 1) * paginationDto.limit,
+        take: paginationDto.limit
     })
+
+    return {
+      data,
+      page: paginationDto.page,
+      limit: paginationDto.limit,
+      total,
+    }
   }
 
   // clear all items in the user's cart

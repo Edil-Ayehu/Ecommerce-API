@@ -7,6 +7,7 @@ import { ProductService } from 'src/product/product.service';
 import { CheckoutDto } from './dto/checkout.dto';
 import { CartService } from 'src/cart/cart.service';
 import { Product } from 'src/product/product.entity';
+import { Cart } from 'src/cart/cart.entity';
 
 @Injectable()
 export class OrderService {
@@ -17,13 +18,18 @@ export class OrderService {
         @InjectRepository(Product)
         private productRepository: Repository<Product>,
 
+        @InjectRepository(Cart)
+        private cartRepository: Repository<Cart>,
+
         private usersSerivce: UsersService,
         private productService: ProductService,
         private cartService: CartService,
     ){}
 
     async checkout(userId:number, dto: CheckoutDto) {
-        const cartItems = await this.cartService.findAllForUser(userId)
+        const cartItems = await this.cartRepository.find({
+            where: {user: {id: userId}}
+        })
 
         if (cartItems.length === 0) {
             throw new BadRequestException("Your cart is empty!");

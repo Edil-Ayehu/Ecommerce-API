@@ -1,7 +1,8 @@
-import { Body, Controller, Post, Headers, Delete, Get, Param, ParseIntPipe } from '@nestjs/common';
+import { Body, Controller, Post, Headers, Delete, Get, Param, ParseIntPipe, Query } from '@nestjs/common';
 import { CartService } from './cart.service';
 import { AuthService } from 'src/auth/auth.service';
 import { AddCartItemDto } from './dto/add-cart-item.dto';
+import { PaginationDto } from 'src/common/dto/pagination.dto';
 
 @Controller('cart')
 export class CartController {
@@ -33,11 +34,13 @@ export class CartController {
     }
 
     @Get('getAllCartItems')
-    findAllByUser(@Headers('authorization') auth:string) {
+    findAllByUser(
+        @Query() paginationDto: PaginationDto,
+        @Headers('authorization') auth:string) {
         const token = auth?.split(' ')[1]
         const payload = this.authService.verifyToken(token)
 
-        return this.cartService.findAllForUser(+payload.sub!)
+        return this.cartService.findCartItems(+payload.sub!,paginationDto)
     }
 
     @Delete()
