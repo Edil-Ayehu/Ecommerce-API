@@ -4,6 +4,7 @@ import { AuthService } from 'src/auth/auth.service';
 import { CheckoutDto } from './dto/checkout.dto';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
 import { AuthGuard } from 'src/auth/guards/auth.guard';
+import { ActiveUser } from 'src/auth/decorators/active-user.decorator';
 
 const JWT_SECRET = 'thisIsMyJWTSecretCode';
 
@@ -19,9 +20,8 @@ export class OrderController {
     @Get('get-my-orders')
     findMyOrders(
         @Body() paginationDto:PaginationDto,
-        @Req() req,
+        @ActiveUser('sub') userId,
     ) {
-        const userId = req.user.sub
         return this.orderService.findMyOrders(userId, paginationDto);
     }
 
@@ -29,16 +29,15 @@ export class OrderController {
     @Post('checkout')
     checkout(
         @Body() checkoutDto:CheckoutDto ,
-        @Req() req,
+        @ActiveUser('sub') userId,
     ) {
-        const userId = req.user.sub;
         return this.orderService.checkout(userId,checkoutDto)
     }
 
     @Get('get-all-orders')
     findAllOrders(
         @Query() paginationDto: PaginationDto,
-        @Req() req,
+        @ActiveUser('sub') userId
     ) {
         return this.orderService.findAllOrders(paginationDto);
     }
