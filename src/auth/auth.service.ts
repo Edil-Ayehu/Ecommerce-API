@@ -1,6 +1,5 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { UsersService } from 'src/users/users.service';
-import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import * as jwt from 'jsonwebtoken';
 
@@ -34,18 +33,18 @@ export class AuthService {
         const token = jwt.sign(
             {sub: user.id, email: user.email}, 
             JWT_SECRET, 
-            {expiresIn: '7d'},
+            {expiresIn: '1d'},
         );
 
         return {'access_token' : token}
     }
 
     //
-    verifyToken(token: string) {
-        try {
-            return jwt.verify(token, JWT_SECRET);
-        } catch(e) {
-            throw new UnauthorizedException("Invalid token")
-        }
-    }
+    // verifyToken(token: string) {
+    //     try {
+    //         return jwt.verify(token, JWT_SECRET);
+    //     } catch(e) {
+    //         throw new UnauthorizedException("Invalid token")
+    //     }
+    // }
 }

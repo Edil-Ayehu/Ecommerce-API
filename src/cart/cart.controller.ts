@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Headers, Delete, Get, Param, ParseIntPipe, Query } from '@nestjs/common';
+import { Body, Controller, Post, Headers, Delete, Get, Param, ParseIntPipe, Query, Req } from '@nestjs/common';
 import { CartService } from './cart.service';
 import { AuthService } from 'src/auth/auth.service';
 import { AddCartItemDto } from './dto/add-cart-item.dto';
@@ -14,40 +14,37 @@ export class CartController {
     @Post('addToCart')
     add(
         @Body() addCartItemDto: AddCartItemDto,
-        @Headers('authorization') auth:string,
+        @Req() req,
     ) {
-        const token = auth?.split(' ')[1]
-        const payload = this.authService.verifyToken(token)
+        const userId = req.user.sub;
 
-        return this.cartService.add(+payload.sub!, addCartItemDto.productId, addCartItemDto.quantity)
+        return this.cartService.add(userId, addCartItemDto.productId, addCartItemDto.quantity)
     }
 
     @Delete('removeFromCart/:productId')
     remove(
         @Param('productId', ParseIntPipe) productId: number,
-        @Headers('authorization') auth:string,
+        @Req() req,
     ) {
-        const token = auth?.split(' ')[1]
-        const payload = this.authService.verifyToken(token)
+        const userId = req.user.sub;
 
-        return this.cartService.remove(+payload.sub!, productId)
+        return this.cartService.remove(userId, productId)
     }
 
     @Get('getAllCartItems')
     findAllByUser(
         @Query() paginationDto: PaginationDto,
-        @Headers('authorization') auth:string) {
-        const token = auth?.split(' ')[1]
-        const payload = this.authService.verifyToken(token)
+        @Req() req,
+    ) {
+        const userId = req.user.sub;
 
-        return this.cartService.findCartItems(+payload.sub!,paginationDto)
+        return this.cartService.findCartItems(userId,paginationDto)
     }
 
     @Delete()
-    clearCartForUser(@Headers('authorization') auth:string) {
-        const token = auth?.split(' ')[1]
-        const payload = this.authService.verifyToken(token)
+    clearCartForUser(@Req() req,) {
+        const userId = req.user.sub;
 
-        return this.cartService.clearCartForUser(+payload.sub!)
+        return this.cartService.clearCartForUser(userId)
     }
 }

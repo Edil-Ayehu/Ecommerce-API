@@ -1,12 +1,13 @@
-import { Body, Controller, Get, Post, Headers, UnauthorizedException, Query } from '@nestjs/common';
+import { Body, Controller, Get, Post, Headers, UnauthorizedException, Query, UseGuards, Req } from '@nestjs/common';
 import { OrderService } from './order.service';
 import { AuthService } from 'src/auth/auth.service';
-import { CreateOrderDto } from './dto/create-order.dto';
 import { CheckoutDto } from './dto/checkout.dto';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
+import { AuthGuard } from 'src/auth/guards/auth.guard';
 
 const JWT_SECRET = 'thisIsMyJWTSecretCode';
 
+@UseGuards(AuthGuard)
 @Controller('order')
 export class OrderController {
     constructor(
@@ -14,31 +15,31 @@ export class OrderController {
         private readonly authService: AuthService
     ) {}
 
-
+    @UseGuards(AuthGuard)
     @Get('get-my-orders')
     findMyOrders(
         @Body() paginationDto:PaginationDto,
-        @Headers('authorization') auth: string) {
-        const token = auth?.split(' ')[1];
-
-        const payload = this.authService.verifyToken(token)
-        return this.orderService.findMyOrders(+payload.sub!, paginationDto);
+        @Req() req,
+    ) {
+        const userId = req.user.sub
+        return this.orderService.findMyOrders(userId, paginationDto);
     }
 
 
     @Post('checkout')
     checkout(
         @Body() checkoutDto:CheckoutDto ,
-        @Headers('authorization') auth: string,
+        @Req() req,
     ) {
-        const token = auth?.split(' ')[1];
-        const payload = this.authService.verifyToken(token)
-
-        return this.orderService.checkout(+payload.sub!,checkoutDto)
+        const userId = req.user.sub;
+        return this.orderService.checkout(userId,checkoutDto)
     }
 
     @Get('get-all-orders')
-    findAllOrders(@Query() paginationDto: PaginationDto) {
+    findAllOrders(
+        @Query() paginationDto: PaginationDto,
+        @Req() req,
+    ) {
         return this.orderService.findAllOrders(paginationDto);
     }
 }
