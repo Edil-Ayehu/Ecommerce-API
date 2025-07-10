@@ -2,35 +2,34 @@ import { Body, Controller, Post, Headers, Delete, Get, Req } from '@nestjs/commo
 import { WishlistService } from './wishlist.service';
 import { AuthService } from 'src/auth/auth.service';
 import { AddWishlistDto } from './dto/add-wishilst.dto';
+import { ActiveUser } from 'src/auth/decorators/active-user.decorator';
 
 @Controller('wishlist')
 export class WishlistController {
     constructor(
-        private authService: AuthService,
         private wishlistService: WishlistService,
     ) {}
 
     @Post('addToWishlist')
     add(
         @Body() addWishlistDto: AddWishlistDto, 
-        @Req() req,
+        @ActiveUser('sub') userId,
     ) {
-        const userId = req.user.sub;
         return this.wishlistService.add(userId, addWishlistDto.productId)
     }
 
     @Delete('removeFromWishlist')
     remove(
         @Body() addWishlistDto: AddWishlistDto,
-        @Req() req,
+        @ActiveUser('sub') userId,
     ) {
-        const userId = req.user.sub;
         return this.wishlistService.remove(userId, addWishlistDto.productId)
     }
 
     @Get('getAllWishlistItems')
-    findAllByUser(@Req() req) {
-        const userId = req.user.sub;
+    findAllByUser(
+        @ActiveUser('sub') userId,
+    ) {
         return this.wishlistService.findAllForUser(userId)
     }
 }
