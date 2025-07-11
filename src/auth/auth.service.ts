@@ -33,7 +33,7 @@ export class AuthService {
         const token = jwt.sign(
             {sub: user.id, email: user.email}, 
             JWT_SECRET, 
-            {expiresIn: '1d'},
+            {expiresIn: '5m'},
         );
 
         return {'access_token' : token}
