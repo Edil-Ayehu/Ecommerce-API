@@ -31,7 +31,11 @@ export class AuthService {
         if(!match) throw new UnauthorizedException('The password is incorrect.please try again!')
         
         const token = jwt.sign(
-            {sub: user.id, email: user.email}, 
+            {
+                sub: user.id, 
+                email: user.email,
+                role: user.role,
+            }, 
             JWT_SECRET, 
             {expiresIn: '5m'},
         );
