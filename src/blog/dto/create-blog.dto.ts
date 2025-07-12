@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsOptional, IsString } from "class-validator"
+import { ArrayNotEmpty, ArrayUnique, IsArray, IsIn, IsInt, IsNotEmpty, IsOptional, IsString, Min } from "class-validator"
 
 export class CreateBlogDto {
     @IsString()
@@ -8,6 +8,18 @@ export class CreateBlogDto {
     @IsString()
     @IsNotEmpty()
     content:string
+
+    @IsArray()
+    @ArrayNotEmpty()
+    @ArrayUnique()
+    @IsOptional()
+    @IsString({each: true})
+    tags?: string[]
+
+    @IsInt()
+    @Min(1)
+    @IsOptional()
+    minRead?: number;
 
     @IsString()
     @IsOptional()

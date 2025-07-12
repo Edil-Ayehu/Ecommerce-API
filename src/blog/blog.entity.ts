@@ -14,6 +14,12 @@ export class Blog {
   @Column({ nullable: true })
   imageUrl: string;
 
+  @Column("simple-array", {nullable: true})
+  tags: string[];  // store tags as comma-separated list
+
+  @Column({type: 'int', default: 1})
+  minRead: number; /// estimated reading time in minutes
+
   @CreateDateColumn()
   createdAt: Date;
 
