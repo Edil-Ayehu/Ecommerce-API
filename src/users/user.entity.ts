@@ -18,6 +18,18 @@ export class User {
     @Column()
     password: string
 
+    @Column({nullable: true})
+    fullName?:string
+
+     @Column({nullable: true})
+    phone?:string
+
+     @Column({nullable: true})
+    address?:string
+
+     @Column({nullable: true})
+    avatar?:string  // URL or base64 string
+
     @Column({
         type: 'enum',
         enum: UserRole,

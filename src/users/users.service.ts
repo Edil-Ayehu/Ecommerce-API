@@ -4,6 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './user.entity';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
 import { RegisterDto } from 'src/auth/dto/register.dto';
+import { UpdateProfileDto } from './dto/update-profile.dto';
 
 @Injectable()
 export class UsersService {
@@ -41,5 +42,14 @@ export class UsersService {
       where: { id },
     });
 
+  }
+
+  async updateProfile(userId: number, updateProfileDto: UpdateProfileDto) {
+    const user = await this.usersRepository.findOne({where: {id: userId}})
+    if(!user) throw new NotFoundException("User Not Found");
+
+    const updatedUser = Object.assign(user,updateProfileDto);
+
+    return this.usersRepository.save(updatedUser);
   }
 }

@@ -42,13 +42,4 @@ export class AuthService {
 
         return {'access_token' : token}
     }
-
-    //
-    // verifyToken(token: string) {
-    //     try {
-    //         return jwt.verify(token, JWT_SECRET);
-    //     } catch(e) {
-    //         throw new UnauthorizedException("Invalid token")
-    //     }
-    // }
 }
