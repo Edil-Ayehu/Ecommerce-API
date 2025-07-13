@@ -23,7 +23,6 @@ export class AuthController {
         return this.authService.login(loginDto.email, loginDto.password);
     }
 
-    @Public()
     @Get('profile')
     async profile(@Req() req,) {
         const userId = req.user.sub;

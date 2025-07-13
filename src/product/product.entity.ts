@@ -1,5 +1,6 @@
+import { Category } from "src/category/category.entity";
 import { OrderItem } from "src/order/order-item.entity";
-import { Column, Entity, PrimaryGeneratedColumn, OneToMany, CreateDateColumn, UpdateDateColumn, DeleteDateColumn } from "typeorm";
+import { Column, Entity, PrimaryGeneratedColumn, OneToMany, CreateDateColumn, UpdateDateColumn, DeleteDateColumn, ManyToOne } from "typeorm";
 
 @Entity()
 export class Product {
@@ -28,9 +29,6 @@ export class Product {
     @Column()
     stock?: number = 1;
 
-    @Column()
-    category: string;
-
     @Column('decimal', { default: 0.0 })
     averageRating?: number;
 
@@ -51,6 +49,9 @@ export class Product {
 
     @OneToMany(()=> OrderItem, (orderItem) => orderItem.product)
     orderItems: OrderItem[]
+
+    @ManyToOne(()=> Category,(category)=> category.product, {eager: true})
+    category: Category
 
     @CreateDateColumn()
     createdAt: Date

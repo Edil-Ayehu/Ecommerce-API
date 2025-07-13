@@ -10,6 +10,7 @@ import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './auth/guards/auth.guard';
 import { RolesGuard } from './auth/guards/roles.guard';
 import { BlogModule } from './blog/blog.module';
+import { CategoryModule } from './category/category.module';
 
 @Module({
   imports: [TypeOrmModule.forRootAsync({
@@ -23,7 +24,7 @@ import { BlogModule } from './blog/blog.module';
       autoLoadEntities: true,
       synchronize: true, // disable in production
     })
-  }), UsersModule, AuthModule, ProductModule, OrderModule, WishlistModule, CartModule, BlogModule],
+  }), UsersModule, AuthModule, ProductModule, OrderModule, WishlistModule, CartModule, BlogModule, CategoryModule],
   controllers: [],
   providers: [
     {

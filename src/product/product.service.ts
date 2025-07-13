@@ -3,16 +3,28 @@ import { Repository } from 'typeorm';
 import { Product } from './product.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
+import { CreateProductDto } from './dto/create-product.dto';
+import { CategoryService } from 'src/category/category.service';
 
 @Injectable()
 export class ProductService {
     constructor(
         @InjectRepository(Product)
-        private productRepository: Repository<Product>
+        private productRepository: Repository<Product>,
+
+        private readonly categoryService: CategoryService,
     ) {}
 
-    create(data: Partial<Product>){
-        return this.productRepository.save(data)
+    async create(createProductDto: CreateProductDto){
+        const category = await this.categoryService.findOne(createProductDto.categoryId)
+
+        if(!category) throw new NotFoundException("Category Not Found");
+        const product = this.productRepository.create({
+            ...createProductDto,
+            category,
+        })
+
+        return this.productRepository.save(product)
     }
 
     async findAll(paginationDto:PaginationDto){

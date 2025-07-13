@@ -2,6 +2,7 @@ import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Query } from 
 import { ProductService } from './product.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
+import { Roles } from 'src/common/decorators/roles.decorator';
 
 @Controller('product')
 export class ProductController {
@@ -10,6 +11,7 @@ export class ProductController {
     ) {}
 
     @Post('create-product')
+    @Roles('admin', 'superadmin')
     create(@Body() createProductDto: CreateProductDto) {
         return this.productService.create(createProductDto)
     }
@@ -25,12 +27,14 @@ export class ProductController {
     }
 
     @Delete('soft-delete/:id')
+    @Roles('admin', 'superadmin')
     softDelete(@Param('id', ParseIntPipe) id:number) {
         return this.productService.softDelete(id)
     }
 
 
     @Delete('delete-product/:id')
+    @Roles('admin', 'superadmin')
     deleteProduct(@Param('id', ParseIntPipe) id:number) {
         return this.productService.deleteProduct(id)
     }
