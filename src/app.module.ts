@@ -11,6 +11,7 @@ import { AuthGuard } from './auth/guards/auth.guard';
 import { RolesGuard } from './auth/guards/roles.guard';
 import { BlogModule } from './blog/blog.module';
 import { CategoryModule } from './category/category.module';
+import { ShippingAddressModule } from './shipping-address/shipping-address.module';
 
 @Module({
   imports: [TypeOrmModule.forRootAsync({
@@ -24,7 +25,7 @@ import { CategoryModule } from './category/category.module';
       autoLoadEntities: true,
       synchronize: true, // disable in production
     })
-  }), UsersModule, AuthModule, ProductModule, OrderModule, WishlistModule, CartModule, BlogModule, CategoryModule],
+  }), UsersModule, AuthModule, ProductModule, OrderModule, WishlistModule, CartModule, BlogModule, CategoryModule, ShippingAddressModule],
   controllers: [],
   providers: [
     {

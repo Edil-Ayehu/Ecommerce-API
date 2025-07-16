@@ -1,4 +1,5 @@
 import { Order } from "src/order/order.entity";
+import { ShippingAddress } from "src/shipping-address/shipping-address.entity";
 import { Column, Entity, PrimaryGeneratedColumn, OneToMany } from "typeorm";
 
 export enum UserRole {
@@ -26,6 +27,9 @@ export class User {
 
      @Column({nullable: true})
     address?:string
+
+    @OneToMany(()=> ShippingAddress, (address)=> address.user)
+    shippingAddress: ShippingAddress
 
      @Column({nullable: true})
     avatar?:string  // URL or base64 string
