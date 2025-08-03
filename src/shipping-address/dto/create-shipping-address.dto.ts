@@ -1,6 +1,6 @@
 import { IsNotEmpty, IsOptional, IsString } from "class-validator";
 
-export class CreateShippingAddress {
+export class CreateShippingAddressDto {
     @IsString()
     @IsNotEmpty()
     fullName:string

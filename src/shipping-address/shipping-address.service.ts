@@ -1,7 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { ShippingAddress } from './shipping-address.entity';
 import { InjectRepository } from '@nestjs/typeorm';
+import { CreateShippingAddressDto } from './dto/create-shipping-address.dto';
+import { User } from 'src/users/user.entity';
+import { UpdateShippingAddressDto } from './dto/update-shipping-address.dto';
 
 @Injectable()
 export class ShippingAddressService {
@@ -10,13 +13,46 @@ export class ShippingAddressService {
         private readonly shippingAddressRepository: Repository<ShippingAddress>
     ) {}
 
-    async create(){}
+    async create(user:User, createShippingAddressDto: CreateShippingAddressDto){
+        const address = this.shippingAddressRepository.create({
+            ...createShippingAddressDto,
+            user,
+        });
 
-    async update() {}
+        return this.shippingAddressRepository.save(address);
+    }
 
-    async findUserAddresses(){}
+    async update(updateShippingAddressDto:UpdateShippingAddressDto) {}
 
-    async delete(){}
+    async findUserAddresses(userId:number){
+        return this.shippingAddressRepository.find({
+            where: {user: {id: userId}},
+            order: {createdAt: 'DESC'}
+        })
+    }
 
-    async findUserAddressById(){}
+    async delete(userId: number, addressId:number){
+        const address = await this.shippingAddressRepository.findOne({
+            where: {
+                id: addressId,
+                user: {id: userId},
+            }
+        });
+
+        if(!address) throw new NotFoundException('Address not found');
+
+        await this.shippingAddressRepository.remove(address);
+
+        return {deleted: true};
+    }
+
+    async findUserAddressById(id:number){
+        const address = await this.shippingAddressRepository.findOne({
+            where: {id}
+        });
+
+        if(!address) throw new NotFoundException(`Address with ID ${id} not found`);
+
+        return address;
+    }
 }

@@ -18,7 +18,7 @@ import { ShippingAddressModule } from './shipping-address/shipping-address.modul
     useFactory: () => ({
       type: 'postgres',
       host: 'localhost',
-      port: 5432,
+      port: 5433,
       username: 'postgres',
       database: 'ecommerce_db',
       password: 'edilayehu',
