@@ -1,7 +1,8 @@
-import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post } from '@nestjs/common';
 import { ShippingAddressService } from './shipping-address.service';
 import { CreateShippingAddressDto } from './dto/create-shipping-address.dto';
 import { ActiveUser } from 'src/auth/decorators/active-user.decorator';
+import { UpdateShippingAddressDto } from './dto/update-shipping-address.dto';
 
 @Controller('shipping-address')
 export class ShippingAddressController {
@@ -35,5 +36,13 @@ export class ShippingAddressController {
         @Param('id', ParseIntPipe) id: number,
     ) {
         return this.shippingAddressService.delete(userId, id)
+    }
+
+    @Patch("update/:id")
+    update(
+        @Param('id', ParseIntPipe) id:number,
+         @Body() updateShippingAddressDto:UpdateShippingAddressDto
+    ) {
+       return this.shippingAddressService.update(id,updateShippingAddressDto);
     }
 }

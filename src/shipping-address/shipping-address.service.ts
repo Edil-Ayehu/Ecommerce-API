@@ -22,7 +22,11 @@ export class ShippingAddressService {
         return this.shippingAddressRepository.save(address);
     }
 
-    async update(updateShippingAddressDto:UpdateShippingAddressDto) {}
+    async update(id:number,updateShippingAddressDto:UpdateShippingAddressDto) {
+        const address = await this.findUserAddressById(id)
+        const updatedAddress = Object.assign(address, updateShippingAddressDto);
+        return this.shippingAddressRepository.save(updatedAddress);
+    }
 
     async findUserAddresses(userId:number){
         return this.shippingAddressRepository.find({
