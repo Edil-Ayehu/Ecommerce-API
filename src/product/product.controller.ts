@@ -25,20 +25,23 @@ export class ProductController {
     }
 
     @Get(':id')
-    findOne(@Param('id', ParseIntPipe) id:number) {
-        return this.productService.findOne(id)
+    async findOne(@Param('id', ParseIntPipe) id:number) {
+        const result = await this.productService.findOne(id)
+        return new ResponseDto(result, "Product detail fetched successfully!")
     }
 
     @Delete('soft-delete/:id')
     @Roles('admin', 'superadmin')
-    softDelete(@Param('id', ParseIntPipe) id:number) {
-        return this.productService.softDelete(id)
+    async softDelete(@Param('id', ParseIntPipe) id:number) {
+        const result = await this.productService.softDelete(id)
+        return new ResponseDto(result, 'Product deleted successfully!');
     }
 
 
     @Delete('delete-product/:id')
     @Roles('admin', 'superadmin')
-    deleteProduct(@Param('id', ParseIntPipe) id:number) {
-        return this.productService.deleteProduct(id)
+    async deleteProduct(@Param('id', ParseIntPipe) id:number) {
+        const result = await this.productService.deleteProduct(id)
+        return new ResponseDto(result, "Product permanently deleted successfully!");
     }
 }
