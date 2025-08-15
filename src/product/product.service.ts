@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { Repository } from 'typeorm';
+import { ILike, Repository } from 'typeorm';
 import { Product } from './product.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
@@ -28,16 +28,23 @@ export class ProductService {
     }
 
     async findAll(paginationDto:PaginationDto){
+        const {page, limit,name} = paginationDto
+
+        const where = name 
+        ? { name: ILike(`%${name}%`) } // partial match on category name
+        : {};
+        
         const [data, total] = await this.productRepository.findAndCount({
-            skip: (paginationDto.page - 1) * paginationDto.limit,
-            take: paginationDto.limit,
+            where,
+            skip: (page - 1) * limit,
+            take: limit,
         })
 
         return {
             data,
             total,
-            page : paginationDto.page,
-            limit: paginationDto.limit,
+            page,
+            limit,
         }
     }
 

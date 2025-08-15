@@ -1,5 +1,5 @@
 import { Type } from "class-transformer"
-import { IsOptional, IsPositive, Min } from "class-validator"
+import { IsOptional, IsPositive, IsString, Min } from "class-validator"
 
 export class PaginationDto {
     @IsOptional()
@@ -11,4 +11,8 @@ export class PaginationDto {
     @Type(() => Number)
     @Min(1)
     limit: number = 10
+
+    @IsOptional()
+    @IsString()
+    name?:string // ✅ Allow product name filtering
 }
