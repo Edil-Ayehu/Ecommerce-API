@@ -37,7 +37,7 @@ export class AuthService {
                 role: user.role,
             }, 
             JWT_SECRET, 
-            {expiresIn: '5m'},
+            {expiresIn: '15m'},
         );
 
         return {'access_token' : token}

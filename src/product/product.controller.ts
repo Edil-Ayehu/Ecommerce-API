@@ -3,6 +3,7 @@ import { ProductService } from './product.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
 import { Roles } from 'src/common/decorators/roles.decorator';
+import { ResponseDto } from 'src/common/dto/response.dto';
 
 @Controller('product')
 export class ProductController {
@@ -12,13 +13,15 @@ export class ProductController {
 
     @Post('create-product')
     @Roles('admin', 'superadmin')
-    create(@Body() createProductDto: CreateProductDto) {
-        return this.productService.create(createProductDto)
+    async create(@Body() createProductDto: CreateProductDto) {
+        const result = await this.productService.create(createProductDto)
+        return new ResponseDto(result, "Product created successfully!")
     }
 
     @Get('get-all-products')
-    findAll(@Query() paginationDto: PaginationDto) {
-        return this.productService.findAll(paginationDto);
+    async findAll(@Query() paginationDto: PaginationDto) {
+        const result = await this.productService.findAll(paginationDto);
+        return new ResponseDto(result, "Products fetched successfully!")
     }
 
     @Get(':id')
