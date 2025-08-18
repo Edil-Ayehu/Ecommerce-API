@@ -11,6 +11,8 @@ export class AuthService {
         private readonly usersService: UsersService,
     ){}
 
+    private blacklistedTokens: string[] = []; // simple in-memory blacklist
+
     async register(user: {email: string, password:string}) {
         const existing = await this.usersService.findByEmail(user.email)
 
@@ -41,5 +43,14 @@ export class AuthService {
         );
 
         return {'access_token' : token}
+    }
+
+    logout(token: string) {
+        this.blacklistedTokens.push(token);
+        return { message: 'Logged out successfully' };
+    }
+
+    isTokenBlacklisted(token: string) {
+        return this.blacklistedTokens.includes(token);
     }
 }

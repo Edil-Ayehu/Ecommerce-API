@@ -6,12 +6,13 @@ import {
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import * as jwt from 'jsonwebtoken';
+import { AuthService } from '../auth.service';
 
 const JWT_SECRET = 'thisIsMyJWTSecretCode'; // Ideally use config service
 
 @Injectable()
 export class AuthGuard implements CanActivate {
-  constructor(private reflector: Reflector) {}
+  constructor(private reflector: Reflector, private authService: AuthService) {}
 
   canActivate(context: ExecutionContext): boolean {
     // If @Public() decorator is set, skip guard
@@ -35,6 +36,10 @@ export class AuthGuard implements CanActivate {
     if (!token) {
       throw new UnauthorizedException('Token missing');
     }
+
+    if (this.authService.isTokenBlacklisted(token)) {
+      throw new UnauthorizedException('Session expired. Please login again');
+  }
 
     try {
       const payload = jwt.verify(token, JWT_SECRET);
