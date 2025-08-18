@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { Wishlist } from './wishlist.entity';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -27,6 +27,15 @@ export class WishlistService {
 
     if(!product) {
         throw new NotFoundException("No Product Found with the given Id!")
+    }
+
+    // check if already exists
+    const existing = await this.wishlistRepo.findOne({
+        where: {product: {id: productId}, user: {id: userId}}
+    });
+ 
+    if(existing) {
+        throw new BadRequestException("This product is already in your wishlist!")
     }
 
     // save the product to wishlit
