@@ -1,8 +1,9 @@
-import { Body, Controller, Post, Headers, Delete, Get, Req } from '@nestjs/common';
+import { Body, Controller, Post, Headers, Delete, Get, Req, Query } from '@nestjs/common';
 import { WishlistService } from './wishlist.service';
 import { AuthService } from 'src/auth/auth.service';
 import { AddWishlistDto } from './dto/add-wishilst.dto';
 import { ActiveUser } from 'src/auth/decorators/active-user.decorator';
+import { PaginationDto } from 'src/common/dto/pagination.dto';
 
 @Controller('wishlist')
 export class WishlistController {
@@ -29,7 +30,8 @@ export class WishlistController {
     @Get('getAllWishlistItems')
     findAllByUser(
         @ActiveUser('sub') userId,
+        @Query() paginationDto:PaginationDto,
     ) {
-        return this.wishlistService.findAllForUser(userId)
+        return this.wishlistService.findAllForUser(userId,paginationDto);
     }
 }

@@ -4,6 +4,7 @@ import { Wishlist } from './wishlist.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UsersService } from 'src/users/users.service';
 import { ProductService } from 'src/product/product.service';
+import { PaginationDto } from 'src/common/dto/pagination.dto';
 
 @Injectable()
 export class WishlistService {
@@ -63,12 +64,26 @@ export class WishlistService {
     }
   }
 
-  findAllForUser(userId: number) {
-    return this.wishlistRepo.find({
-        where: {
-            user: {id: userId},
-        },
+  async findAllForUser(userId: number, paginationDto: PaginationDto) {
+    const {page, limit} = paginationDto
+    // return this.wishlistRepo.find({
+    //     where: {
+    //         user: {id: userId},
+    //     },
+    //     relations: ['product'],
+    // });
+    const [data, total] = await this.wishlistRepo.findAndCount({
+        where: { user: {id: userId}},
         relations: ['product'],
-    })
+        skip: (page - 1) * limit,
+        take: limit,
+    });
+
+    return {
+        data,
+        total,
+        page,
+        limit,
+    }
   }
 }
