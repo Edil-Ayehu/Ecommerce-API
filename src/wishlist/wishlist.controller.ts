@@ -19,11 +19,11 @@ export class WishlistController {
     }
 
     @Delete('removeFromWishlist')
-    remove(
+    async remove(
         @Body() addWishlistDto: AddWishlistDto,
         @ActiveUser('sub') userId,
     ) {
-        return this.wishlistService.remove(userId, addWishlistDto.productId)
+        return await this.wishlistService.remove(userId, addWishlistDto.productId)
     }
 
     @Get('getAllWishlistItems')

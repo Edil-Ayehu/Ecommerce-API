@@ -50,12 +50,16 @@ export class WishlistService {
         }
     })
 
+    if(!item) {
+        throw new NotFoundException("This product not found in your wishlist!")
+    }
+
     if (item) {
         await this.wishlistRepo.remove(item)
     }
 
     return {
-        message: "Product Removed from wishlist"
+        message: "Product Removed from your wishlist"
     }
   }
 
