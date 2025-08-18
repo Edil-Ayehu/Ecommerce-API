@@ -4,6 +4,7 @@ import { AuthService } from 'src/auth/auth.service';
 import { AddWishlistDto } from './dto/add-wishilst.dto';
 import { ActiveUser } from 'src/auth/decorators/active-user.decorator';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
+import { ResponseDto } from 'src/common/dto/response.dto';
 
 @Controller('wishlist')
 export class WishlistController {
@@ -12,11 +13,12 @@ export class WishlistController {
     ) {}
 
     @Post('addToWishlist')
-    add(
+    async add(
         @Body() addWishlistDto: AddWishlistDto, 
         @ActiveUser('sub') userId,
     ) {
-        return this.wishlistService.add(userId, addWishlistDto.productId)
+        const result = await this.wishlistService.add(userId, addWishlistDto.productId)
+        return new ResponseDto(result, "Product succesfully added to your wishlist!")
     }
 
     @Delete('removeFromWishlist')
@@ -24,7 +26,8 @@ export class WishlistController {
         @Body() addWishlistDto: AddWishlistDto,
         @ActiveUser('sub') userId,
     ) {
-        return await this.wishlistService.remove(userId, addWishlistDto.productId)
+        const result = await this.wishlistService.remove(userId, addWishlistDto.productId)
+        return new ResponseDto(result, "Product successfully removed from wishlist!")
     }
 
     @Get('getAllWishlistItems')

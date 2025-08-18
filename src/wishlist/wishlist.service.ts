@@ -60,18 +60,13 @@ export class WishlistService {
     }
 
     return {
-        message: "Product Removed from your wishlist"
+        deleted: true,
+        productId,
     }
   }
 
   async findAllForUser(userId: number, paginationDto: PaginationDto) {
     const {page, limit} = paginationDto
-    // return this.wishlistRepo.find({
-    //     where: {
-    //         user: {id: userId},
-    //     },
-    //     relations: ['product'],
-    // });
     const [data, total] = await this.wishlistRepo.findAndCount({
         where: { user: {id: userId}},
         relations: ['product'],

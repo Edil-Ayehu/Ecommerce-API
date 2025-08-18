@@ -32,6 +32,7 @@ export class AuthController {
 
     @UseGuards(AuthGuard)
     @Post('logout')
+    @HttpCode(HttpStatus.OK)
     logout(@Req() req) {
     const authHeader = req.headers['authorization'];
     const token = authHeader?.split(' ')[1];
