@@ -24,7 +24,7 @@ export class ProductController {
         return new ResponseDto(result, "Products fetched successfully!")
     }
 
-    @Get(':id')
+    @Get('detail/:id')
     async findOne(@Param('id', ParseIntPipe) id:number) {
         const result = await this.productService.findOne(id)
         return new ResponseDto(result, "Product detail fetched successfully!")
@@ -44,4 +44,13 @@ export class ProductController {
         const result = await this.productService.deleteProduct(id)
         return new ResponseDto(result, "Product permanently deleted successfully!");
     }
+
+    // product.controller.ts
+    @Get('stats')
+    @Roles('admin', 'superadmin')
+    async getStats() {
+     const result = await this.productService.getProductStats();
+     return new ResponseDto(result, "Product stats fetched successfully!");
+    }
+
 }

@@ -79,4 +79,40 @@ export class ProductService {
             deleted: true,
         }
     }
+
+    // product.service.ts
+async getProductStats() {
+  const totalProducts = await this.productRepository.count();
+
+  const avgRating = await this.productRepository
+    .createQueryBuilder('product')
+    .select('AVG(product.averageRating)', 'avg')
+    .getRawOne();
+
+  const bestSelling = await this.productRepository.find({
+    order: { salesCount: 'DESC' },
+    take: 5,
+    select: ['id', 'name', 'salesCount', 'price', 'thumbnailImage'],
+  });
+
+  const lowStock = await this.productRepository.find({
+    where: { stock: 0 },
+    select: ['id', 'name', 'stock'],
+  });
+
+  const recentlyAdded = await this.productRepository.find({
+    order: { createdAt: 'DESC' },
+    take: 5,
+    select: ['id', 'name', 'price', 'createdAt'],
+  });
+
+  return {
+    totalProducts,
+    averageRating: Number(avgRating.avg) || 0,
+    bestSelling,
+    lowStock,
+    recentlyAdded,
+  };
+}
+
 }
