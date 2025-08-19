@@ -31,10 +31,11 @@ export class WishlistController {
     }
 
     @Get('getAllWishlistItems')
-    findAllByUser(
+    async findAllByUser(
         @ActiveUser('sub') userId,
         @Query() paginationDto:PaginationDto,
     ) {
-        return this.wishlistService.findAllForUser(userId,paginationDto);
+        const result = await this.wishlistService.findAllForUser(userId,paginationDto);
+        return new ResponseDto(result, "Wishlist items fetched successfully!");
     }
 }

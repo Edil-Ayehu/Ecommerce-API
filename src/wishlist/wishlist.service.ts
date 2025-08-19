@@ -67,7 +67,7 @@ export class WishlistService {
 
   async findAllForUser(userId: number, paginationDto: PaginationDto) {
     const {page, limit} = paginationDto
-    const [data, total] = await this.wishlistRepo.findAndCount({
+    const [items, total] = await this.wishlistRepo.findAndCount({
         where: { user: {id: userId}},
         relations: ['product'],
         skip: (page - 1) * limit,
@@ -75,7 +75,7 @@ export class WishlistService {
     });
 
     return {
-        data,
+        items,
         total,
         page,
         limit,
