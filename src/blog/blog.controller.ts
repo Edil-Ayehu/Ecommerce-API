@@ -3,6 +3,8 @@ import { BlogService } from './blog.service';
 import { CreateBlogDto } from './dto/create-blog.dto';
 import { UpdateBlogDto } from './dto/update-blog.dto';
 import { Roles } from 'src/common/decorators/roles.decorator';
+import { ResponseDto } from 'src/common/dto/response.dto';
+import { PaginationDto } from 'src/common/dto/pagination.dto';
 
 @Controller('blog')
 export class BlogController {
@@ -12,30 +14,35 @@ export class BlogController {
 
     @Post('create-blog')
     @Roles('admin', 'superadmin')
-    createBlog(@Body() createBlogDto: CreateBlogDto) {
-        return this.blogService.createBlog(createBlogDto);
+    async createBlog(@Body() createBlogDto: CreateBlogDto) {
+        const result = await this.blogService.createBlog(createBlogDto);
+        return new ResponseDto(result, "Blog created successfully");
     }
 
     @Patch('update-blog/:id')
     @Roles('admin', 'superadmin')
-    updateBlog(@Param('id', ParseIntPipe) id: number,
+    async updateBlog(@Param('id', ParseIntPipe) id: number,
         @Body() updateBlogDto: UpdateBlogDto) {
-        return this.blogService.updateBlog(id,updateBlogDto);
+        const result = await this.blogService.updateBlog(id,updateBlogDto);
+        return new ResponseDto(result, "Blog updated successfully");
     }
 
     @Delete('delete-blog/:id')
     @Roles('admin', 'superadmin')
-    deleteBlog(@Param('id', ParseIntPipe) id:number) {
-        return this.blogService.deleteBlog(id)
+    async  deleteBlog(@Param('id', ParseIntPipe) id:number) {
+        const result = await this.blogService.deleteBlog(id);
+        return new ResponseDto(result, "Blog deleted successfully");
     }
 
     @Get(':id')
-    findOne(@Param('id', ParseIntPipe) id: number) {
-        return this.blogService.findOne(id)
+    async findOne(@Param('id', ParseIntPipe) id: number) {
+        const result =  await this.blogService.findOne(id)
+        return new ResponseDto(result, "Blog fetched successfully");
     }
 
     @Get()
-    findAll() {
-        return this.blogService.findAll()
+    async findAll(@Body() paginationDto:PaginationDto) {
+        const result = await  this.blogService.findAll(paginationDto)
+        return new ResponseDto(result, "Blogs fetched successfully");
     }
 }
