@@ -3,6 +3,8 @@ import { UsersService } from './users.service';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
 import { UpdateProfileDto } from './dto/update-profile.dto';
 import { ActiveUser } from 'src/auth/decorators/active-user.decorator';
+import { Roles } from 'src/common/decorators/roles.decorator';
+import { ResponseDto } from 'src/common/dto/response.dto';
 
 @Controller('users')
 export class UsersController {
@@ -11,12 +13,22 @@ export class UsersController {
     ) {}
 
     @Get('find-all-users')
-    findAllUsers(@Query() paginationDto: PaginationDto) {
-        return this.usersService.findAllUsers(paginationDto)
+    @Roles('admin', 'superadmin')
+    async  findAllUsers(@Query() paginationDto: PaginationDto) {
+        const result = await this.usersService.findAllUsers(paginationDto)
+        return new ResponseDto(result, "Users fetched successfully!");
     }
 
     @Patch('update-profile')
-    UpdateProfile(@Body() updateProfileDto: UpdateProfileDto, @ActiveUser('sub') userId) {
-        return this.usersService.updateProfile(userId, updateProfileDto)
+    async UpdateProfile(@Body() updateProfileDto: UpdateProfileDto, @ActiveUser('sub') userId) {
+        const result = await this.usersService.updateProfile(userId, updateProfileDto)
+        return new ResponseDto(result, "Profile updated successfully!");
     }
+
+    // @Get('stats')
+    // @Roles('admin', 'superadmin')
+    // async getUserStats() {
+    //  const result = await this.usersService.getUserStats();
+    // return new ResponseDto(result, "User stats fetched successfully!");
+    // }
 }

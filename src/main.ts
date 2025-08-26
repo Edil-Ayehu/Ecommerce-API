@@ -9,6 +9,7 @@ async function bootstrap() {
     forbidNonWhitelisted: true, // throw error if extra properties exist in the body
     transform: true, // transform payloads to DTO instances
   }))
-  await app.listen(process.env.PORT ?? 3000);
+  const port = process.env.PORT ?? 3000;
+  await app.listen(port as number, '0.0.0.0');
 }
 bootstrap();

@@ -4,6 +4,7 @@ import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { Public } from 'src/common/decorators/public.decorator';
 import { AuthGuard } from './guards/auth.guard';
+import { ResponseDto } from 'src/common/dto/response.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -13,15 +14,17 @@ export class AuthController {
 
     @Public()
     @Post('register')
-    register(@Body() registerDto: RegisterDto){
-        return this.authService.register(registerDto)
+    async  register(@Body() registerDto: RegisterDto){
+        const result = await this.authService.register(registerDto)
+        return new ResponseDto(result, "User registered successfully!")
     }
 
     @Public()
     @Post('login')
     @HttpCode(HttpStatus.OK)
-    login(@Body() loginDto: LoginDto) {
-        return this.authService.login(loginDto.email, loginDto.password);
+    async login(@Body() loginDto: LoginDto) {
+        const result = await this.authService.login(loginDto.email, loginDto.password);
+        return new ResponseDto(result, "Logged In successfully!")
     }
 
     @Get('profile')

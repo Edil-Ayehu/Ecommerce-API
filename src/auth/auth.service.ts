@@ -42,7 +42,9 @@ export class AuthService {
             {expiresIn: '15m'},
         );
 
-        return {'access_token' : token}
+        return {
+            user,
+            'access_token' : token}
     }
 
     logout(token: string) {

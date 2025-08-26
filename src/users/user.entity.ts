@@ -1,6 +1,6 @@
 import { Order } from "src/order/order.entity";
 import { ShippingAddress } from "src/shipping-address/shipping-address.entity";
-import { Column, Entity, PrimaryGeneratedColumn, OneToMany } from "typeorm";
+import { Column, Entity, PrimaryGeneratedColumn, OneToMany, CreateDateColumn, UpdateDateColumn } from "typeorm";
 
 export enum UserRole {
     USER = 'user',
@@ -43,4 +43,10 @@ export class User {
 
     @OneToMany(()=> Order, (order) => order.user)
     orders: Order[]
+
+    @CreateDateColumn()
+    createdAt: Date
+
+    @UpdateDateColumn()
+    updatedDate:Date
 }
