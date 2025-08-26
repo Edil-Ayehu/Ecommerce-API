@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Cart } from './cart.entity';
 import { Repository } from 'typeorm';
@@ -55,6 +55,10 @@ export class CartService {
             product: {id: productId}
         }
     })
+
+    if(!item) {
+        throw new BadRequestException("Product not found in cart");
+    }
 
     if(item) {
         await this.cartRepository.remove(item)
