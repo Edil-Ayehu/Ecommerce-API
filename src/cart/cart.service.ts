@@ -28,7 +28,7 @@ export class CartService {
     const product = await this.productService.findOne(productId)
 
      if(!product) {
-        throw new UnauthorizedException("Please login to add product to cart");
+        throw new UnauthorizedException("Product not found");
     }
 
     // check if already in cart

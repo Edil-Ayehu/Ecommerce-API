@@ -1,24 +1,22 @@
 import { Body, Controller, Post, Headers, Delete, Get, Param, ParseIntPipe, Query, Req } from '@nestjs/common';
 import { CartService } from './cart.service';
-import { AuthService } from 'src/auth/auth.service';
 import { AddCartItemDto } from './dto/add-cart-item.dto';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
+import { ActiveUser } from 'src/auth/decorators/active-user.decorator';
 
 @Controller('cart')
 export class CartController {
     constructor(
         private cartService: CartService,
-        private authService: AuthService,
     ) {}
 
-    @Post('addToCart')
-    add(
+    @Post('add')
+    async  add(
         @Body() addCartItemDto: AddCartItemDto,
-        @Req() req,
+        @ActiveUser('sub') userId
     ) {
-        const userId = req.user.sub;
-
-        return this.cartService.add(userId, addCartItemDto.productId, addCartItemDto.quantity)
+        console.log(userId)
+        return await this.cartService.add(userId, addCartItemDto.productId, addCartItemDto.quantity)
     }
 
     @Delete('removeFromCart/:productId')
@@ -34,10 +32,9 @@ export class CartController {
     @Get('getAllCartItems')
     findAllByUser(
         @Query() paginationDto: PaginationDto,
-        @Req() req,
+        @ActiveUser('sub') userId
     ) {
-        const userId = req.user.sub;
-
+        console.log(userId)
         return this.cartService.findCartItems(userId,paginationDto)
     }
 
