@@ -1,9 +1,10 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Category } from './category.entity';
 import { Repository } from 'typeorm';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
+import { PaginationDto } from 'src/common/dto/pagination.dto';
 
 @Injectable()
 export class CategoryService {
@@ -13,12 +14,29 @@ export class CategoryService {
     ){}
 
     async create (createCategoryDto: CreateCategoryDto) {
+        const existing = await this.categoryRepository.findOne({
+            where: {name: createCategoryDto.name}
+        });
+        if(existing) throw new BadRequestException("Category Already Exists")
+            
         const category = await this.categoryRepository.create(createCategoryDto)
         return await this.categoryRepository.save(category);
     }
 
-    findAll(){
-        return this.categoryRepository.find()
+    async findAll(paginationDto:PaginationDto){
+        const {page, limit} = paginationDto;
+
+        const [docs, total] = await this.categoryRepository.findAndCount({
+            skip: (page - 1) * limit,
+            take: limit,
+        })
+
+        return {
+            docs,
+            total,
+            page,
+            limit, 
+        }
     }
 
     async findOne(id:number) {
