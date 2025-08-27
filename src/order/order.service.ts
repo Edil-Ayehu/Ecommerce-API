@@ -33,7 +33,7 @@ export class OrderService {
         })
 
         if (cartItems.length === 0) {
-            throw new BadRequestException("Your cart is empty!");
+            throw new BadRequestException("Your cart is empty. Add items to cart.");
         }
 
         // Create order entity

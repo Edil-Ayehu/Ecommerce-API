@@ -6,6 +6,7 @@ import { PaginationDto } from 'src/common/dto/pagination.dto';
 import { ActiveUser } from 'src/auth/decorators/active-user.decorator';
 import { RolesGuard } from 'src/auth/guards/roles.guard';
 import { Roles } from 'src/common/decorators/roles.decorator';
+import { ResponseDto } from 'src/common/dto/response.dto';
 
 const JWT_SECRET = 'thisIsMyJWTSecretCode';
 
@@ -17,11 +18,12 @@ export class OrderController {
     ) {}
 
     @Get('get-my-orders')
-    findMyOrders(
+    async findMyOrders(
         @Body() paginationDto:PaginationDto,
         @ActiveUser('sub') userId,
     ) {
-        return this.orderService.findMyOrders(userId, paginationDto);
+        const result = await this.orderService.findMyOrders(userId, paginationDto);
+        return new ResponseDto(result, 'Orders fetched successfully');
     }
 
 
@@ -35,10 +37,11 @@ export class OrderController {
 
     @Get('get-all-orders')
     @Roles('admin', 'superadmin')
-    findAllOrders(
+    async findAllOrders(
         @Query() paginationDto: PaginationDto,
         @ActiveUser('sub') userId
     ) {
-        return this.orderService.findAllOrders(paginationDto);
+        const result = await this.orderService.findAllOrders(paginationDto);
+        return new ResponseDto(result, 'All Orders fetched successfully');
     }
 }
