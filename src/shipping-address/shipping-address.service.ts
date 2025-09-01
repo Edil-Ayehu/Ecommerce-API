@@ -5,6 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { CreateShippingAddressDto } from './dto/create-shipping-address.dto';
 import { User } from 'src/users/user.entity';
 import { UpdateShippingAddressDto } from './dto/update-shipping-address.dto';
+import { PaginationDto } from 'src/common/dto/pagination.dto';
 
 @Injectable()
 export class ShippingAddressService {
@@ -28,11 +29,22 @@ export class ShippingAddressService {
         return this.shippingAddressRepository.save(updatedAddress);
     }
 
-    async findUserAddresses(userId:number){
-        return this.shippingAddressRepository.find({
+    async findUserAddresses(userId:number, paginationDto: PaginationDto){
+        const {page, limit} = paginationDto;
+
+        const [docs, total] = await this.shippingAddressRepository.findAndCount({
             where: {user: {id: userId}},
-            order: {createdAt: 'DESC'}
-        })
+            order: {createdAt: 'DESC'},
+            skip: (page - 1) * limit,
+            take: limit,
+        });
+
+        return {
+            docs,
+            total,
+            page,
+            limit,
+        }
     }
 
     async delete(userId: number, addressId:number){
@@ -47,7 +59,10 @@ export class ShippingAddressService {
 
         await this.shippingAddressRepository.remove(address);
 
-        return {deleted: true};
+        return {
+            addressId,
+            deleted: true,
+        };
     }
 
     async findUserAddressById(id:number){

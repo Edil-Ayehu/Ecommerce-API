@@ -1,8 +1,10 @@
-import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Query } from '@nestjs/common';
 import { ShippingAddressService } from './shipping-address.service';
 import { CreateShippingAddressDto } from './dto/create-shipping-address.dto';
 import { ActiveUser } from 'src/auth/decorators/active-user.decorator';
 import { UpdateShippingAddressDto } from './dto/update-shipping-address.dto';
+import { PaginationDto } from 'src/common/dto/pagination.dto';
+import { ResponseDto } from 'src/common/dto/response.dto';
 
 @Controller('shipping-address')
 export class ShippingAddressController {
@@ -11,38 +13,44 @@ export class ShippingAddressController {
     ) {}
 
     @Post('create')
-    create(
+    async create(
         @ActiveUser('sub') userId: number,
         @Body() dto:CreateShippingAddressDto,
     ) {
-        return this.shippingAddressService.create({id: userId} as any, dto)
+        const result = await this.shippingAddressService.create({id: userId} as any, dto)
+        return new ResponseDto(result, 'Address created successfully');
     }
 
     @Get()
-    findAll(
+    async findAll(
         @ActiveUser('sub') userId: number,
+        @Query() paginationDto: PaginationDto
     ) {
-        return this.shippingAddressService.findUserAddresses(userId)
+        const result = await this.shippingAddressService.findUserAddresses(userId, paginationDto)
+        return new ResponseDto(result, "Addresses fetched successfully");
     }
 
     @Get(":id")
-    findById(@Param('id', ParseIntPipe) id:number) {
-        return this.shippingAddressService.findUserAddressById(id)
+    async findById(@Param('id', ParseIntPipe) id:number) {
+        const result = await this.shippingAddressService.findUserAddressById(id)
+        return new ResponseDto(result, 'Address fetched successfully');
     }
 
     @Delete('deleteAddress/:id')
-    remove(
+    async remove(
         @ActiveUser('sub') userId: number,
         @Param('id', ParseIntPipe) id: number,
     ) {
-        return this.shippingAddressService.delete(userId, id)
+        const result =await this.shippingAddressService.delete(userId, id)
+        return new ResponseDto(result, 'Address deleted successfully');
     }
 
     @Patch("update/:id")
-    update(
+    async update(
         @Param('id', ParseIntPipe) id:number,
          @Body() updateShippingAddressDto:UpdateShippingAddressDto
     ) {
-       return this.shippingAddressService.update(id,updateShippingAddressDto);
+       const result = await this.shippingAddressService.update(id,updateShippingAddressDto);
+       return new ResponseDto(result, 'Address updated successfully');
     }
 }
