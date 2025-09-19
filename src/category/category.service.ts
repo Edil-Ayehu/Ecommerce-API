@@ -13,15 +13,16 @@ export class CategoryService {
         private readonly categoryRepository: Repository<Category>
     ){}
 
-    async create (createCategoryDto: CreateCategoryDto) {
-        const existing = await this.categoryRepository.findOne({
-            where: {name: createCategoryDto.name}
-        });
-        if(existing) throw new BadRequestException("Category Already Exists")
-            
-        const category = await this.categoryRepository.create(createCategoryDto)
-        return await this.categoryRepository.save(category);
-    }
+async create(createCategoryDto: CreateCategoryDto & { imageUrl?: string }) {
+  const existing = await this.categoryRepository.findOne({
+    where: { name: createCategoryDto.name },
+  });
+  if (existing) throw new BadRequestException('Category Already Exists');
+
+  const category = this.categoryRepository.create(createCategoryDto);
+  return await this.categoryRepository.save(category);
+}
+
 
     async findAll(paginationDto:PaginationDto){
         const {page, limit} = paginationDto;

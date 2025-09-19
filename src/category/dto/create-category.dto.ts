@@ -9,7 +9,7 @@ export class CreateCategoryDto {
     @IsOptional()
     description?:string
 
-    @IsString()
-    @IsOptional()
-    imageUrl?:string
+    // @IsString()
+    // @IsOptional()
+    // imageUrl?:string
 }
