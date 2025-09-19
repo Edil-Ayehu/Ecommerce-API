@@ -1,4 +1,4 @@
-import { Type } from "class-transformer"
+import { Transform, Type } from "class-transformer"
 import { IsArray, IsBoolean, IsDecimal, IsIn, IsInt, IsNotEmpty, IsNumber, IsOptional, IsPositive, IsString, Max, Min } from "class-validator"
 
 export class CreateProductDto {
@@ -8,22 +8,13 @@ export class CreateProductDto {
 
     @IsNumber()
     @IsPositive()
-    @IsNotEmpty()
+    @Type(() => Number) // <-- transform string to number
     price: number
 
     @IsDecimal()
     @IsPositive()
     @IsOptional()
     discountPercentage?: number
-
-    @IsString()
-    @IsNotEmpty()
-    thumbnailImage: string
-
-    @IsOptional()
-    @IsArray()
-    @IsString({each: true})
-    images?:string[] 
 
     @IsString()
     @IsOptional()
@@ -36,6 +27,7 @@ export class CreateProductDto {
 
     @IsInt()
     @IsPositive()
+    @Type(() => Number) // converts string to number
     categoryId: number
 
     @IsNumber({allowNaN: false, allowInfinity: false})
@@ -52,6 +44,7 @@ export class CreateProductDto {
 
     @IsBoolean()
     @IsOptional()
+    @Transform(({ value }) => value === 'true')
     isFeatured?: boolean
 
     @IsInt()

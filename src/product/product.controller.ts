@@ -1,22 +1,57 @@
-import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Query } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Query, UploadedFile, UploadedFiles, UseInterceptors } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
 import { Roles } from 'src/common/decorators/roles.decorator';
 import { ResponseDto } from 'src/common/dto/response.dto';
+import { AnyFilesInterceptor } from '@nestjs/platform-express';
+import { CloudinaryService } from 'src/common/services/cloudinary_service';
 
 @Controller('product')
 export class ProductController {
     constructor(
-        private readonly productService: ProductService
+        private readonly productService: ProductService,
+         private readonly cloudinaryService: CloudinaryService,
     ) {}
 
-    @Post('create-product')
-    @Roles('admin', 'superadmin')
-    async create(@Body() createProductDto: CreateProductDto) {
-        const result = await this.productService.create(createProductDto)
-        return new ResponseDto(result, "Product created successfully!")
+  @Post('create-product')
+  @Roles('admin', 'superadmin')
+@UseInterceptors(AnyFilesInterceptor())
+  async create(
+    @Body() createProductDto: CreateProductDto,
+    @UploadedFiles() files: Express.Multer.File[],
+  ) {
+
+     // Separate files by fieldname
+    const thumbnail = files.find(f => f.fieldname === 'thumbnailImage');
+    const additionalImages = files.filter(f => f.fieldname === 'images');
+
+
+    if (!thumbnail) {
+      throw new BadRequestException('Thumbnail image is required');
     }
+
+    // Upload thumbnail
+    const thumbnailUrl = await this.cloudinaryService.uploadImage(
+      thumbnail,
+      'products/thumbnails',
+    );
+
+       // Upload additional images
+    const additionalImageUrls = await Promise.all(
+      additionalImages.map(file =>
+        this.cloudinaryService.uploadImage(file, 'products/images'),
+      ),
+    );
+
+        const product = await this.productService.create({
+      ...createProductDto,
+      thumbnailImage: thumbnailUrl,
+      images: additionalImageUrls,
+    });
+
+    return new ResponseDto(product, 'Product created successfully!');
+  }
 
     @Get('get-all-products')
     async findAll(@Query() paginationDto: PaginationDto) {

@@ -15,17 +15,11 @@ export class ProductService {
         private readonly categoryService: CategoryService,
     ) {}
 
-    async create(createProductDto: CreateProductDto){
-        const category = await this.categoryService.findOne(createProductDto.categoryId)
+    async create(createProductDto: CreateProductDto & { thumbnailImage: string; images?: string[] }) {
+  const product = this.productRepository.create(createProductDto);
+  return await this.productRepository.save(product);
+}
 
-        if(!category) throw new NotFoundException("Category Not Found");
-        const product = this.productRepository.create({
-            ...createProductDto,
-            category,
-        })
-
-        return this.productRepository.save(product)
-    }
 
     async findAll(paginationDto:PaginationDto){
         const {page, limit,name} = paginationDto
