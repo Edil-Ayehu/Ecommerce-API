@@ -6,12 +6,20 @@ import { Roles } from 'src/common/decorators/roles.decorator';
 import { ResponseDto } from 'src/common/dto/response.dto';
 import { AnyFilesInterceptor } from '@nestjs/platform-express';
 import { CloudinaryService } from 'src/common/services/cloudinary_service';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Category } from 'src/category/category.entity';
+import { Repository } from 'typeorm';
+import { Product } from './product.entity';
 
 @Controller('product')
 export class ProductController {
     constructor(
         private readonly productService: ProductService,
          private readonly cloudinaryService: CloudinaryService,
+
+         @InjectRepository(Category)
+         private readonly categoryRepository: Repository<Category>
+
     ) {}
 
   @Post('create-product')
@@ -44,11 +52,20 @@ export class ProductController {
       ),
     );
 
-        const product = await this.productService.create({
-      ...createProductDto,
-      thumbnailImage: thumbnailUrl,
-      images: additionalImageUrls,
-    });
+    const category = await this.categoryRepository.findOne({
+       where: { id: createProductDto.categoryId },
+     });
+
+    if (!category) {
+       throw new BadRequestException('Invalid categoryId');
+     }
+
+      const product = await this.productService.create({
+          ...createProductDto,
+          thumbnailImage: thumbnailUrl,
+          images: additionalImageUrls,
+          category, // now TypeScript is happy
+       });
 
     return new ResponseDto(product, 'Product created successfully!');
   }

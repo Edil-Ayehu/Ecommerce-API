@@ -11,9 +11,9 @@ export class CreateProductDto {
     @Type(() => Number) // <-- transform string to number
     price: number
 
-    @IsDecimal()
     @IsPositive()
     @IsOptional()
+    @Type(() => Number)
     discountPercentage?: number
 
     @IsString()
@@ -23,6 +23,7 @@ export class CreateProductDto {
     @IsOptional()
     @IsInt()
     @Min(1)
+    @Type(() => Number)
     stock?: number = 1;
 
     @IsInt()

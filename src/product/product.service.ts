@@ -15,7 +15,7 @@ export class ProductService {
         private readonly categoryService: CategoryService,
     ) {}
 
-    async create(createProductDto: CreateProductDto & { thumbnailImage: string; images?: string[] }) {
+    async create(createProductDto: Partial<Product> & { thumbnailImage: string; images?: string[] }) {
   const product = this.productRepository.create(createProductDto);
   return await this.productRepository.save(product);
 }
