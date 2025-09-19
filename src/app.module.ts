@@ -12,9 +12,12 @@ import { RolesGuard } from './auth/guards/roles.guard';
 import { BlogModule } from './blog/blog.module';
 import { CategoryModule } from './category/category.module';
 import { ShippingAddressModule } from './shipping-address/shipping-address.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
-  imports: [TypeOrmModule.forRootAsync({
+  imports: [
+    ConfigModule.forRoot({ isGlobal: true }), // ✅ loads .env automatically
+    TypeOrmModule.forRootAsync({
     useFactory: () => ({
       type: 'postgres',
       host: 'localhost',

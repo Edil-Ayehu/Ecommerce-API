@@ -6,9 +6,8 @@ import { Roles } from 'src/common/decorators/roles.decorator';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
 import { ResponseDto } from 'src/common/dto/response.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { extname } from 'path';
-import { diskStorage} from 'multer';
 import { Express } from 'express-serve-static-core';
+import cloudinary from 'src/config/cloudinary.config';
 
 @Controller('category')
 export class CategoryController {
@@ -17,19 +16,7 @@ export class CategoryController {
     ) {}
 
   @Post('create-category')
-  @Roles('admin', 'superadmin')
-  @UseInterceptors(
-    FileInterceptor('image', {
-      storage: diskStorage({
-        destination: './uploads/categories',
-        filename: (req, file, callback) => {
-          const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
-          const ext = extname(file.originalname);
-          callback(null, file.fieldname + '-' + uniqueSuffix + ext);
-        },
-      }),
-    }),
-  )
+  @UseInterceptors(FileInterceptor('image'))
   async create(
     @Body() createCategoryDto: CreateCategoryDto,
     @UploadedFile() file: Express.Multer.File,
@@ -38,9 +25,21 @@ export class CategoryController {
       throw new BadRequestException('Image file is required');
     }
 
+    // Upload to Cloudinary
+    const uploadResult = await new Promise((resolve, reject) => {
+      cloudinary.uploader
+        .upload_stream({ folder: 'categories' }, (error, result) => {
+          if (error) return reject(error);
+          resolve(result);
+        })
+        .end(file.buffer);
+    });
+
+    const { secure_url } = uploadResult as any;
+
     const result = await this.categoryService.create({
       ...createCategoryDto,
-      imageUrl: file.filename, // or full path if you want
+      imageUrl: secure_url, // store only cloudinary URL
     });
 
     return new ResponseDto(result, 'Category created successfully');
