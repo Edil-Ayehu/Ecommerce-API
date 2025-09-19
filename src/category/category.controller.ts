@@ -7,15 +7,16 @@ import { PaginationDto } from 'src/common/dto/pagination.dto';
 import { ResponseDto } from 'src/common/dto/response.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Express } from 'express-serve-static-core';
-import cloudinary from 'src/config/cloudinary.config';
+import { CloudinaryService } from 'src/common/services/cloudinary_service';
 
 @Controller('category')
 export class CategoryController {
     constructor(
-        private readonly categoryService: CategoryService
+        private readonly categoryService: CategoryService,
+        private readonly cloudinaryService: CloudinaryService,
     ) {}
 
-  @Post('create-category')
+     @Post('create-category')
   @UseInterceptors(FileInterceptor('image'))
   async create(
     @Body() createCategoryDto: CreateCategoryDto,
@@ -25,21 +26,12 @@ export class CategoryController {
       throw new BadRequestException('Image file is required');
     }
 
-    // Upload to Cloudinary
-    const uploadResult = await new Promise((resolve, reject) => {
-      cloudinary.uploader
-        .upload_stream({ folder: 'categories' }, (error, result) => {
-          if (error) return reject(error);
-          resolve(result);
-        })
-        .end(file.buffer);
-    });
-
-    const { secure_url } = uploadResult as any;
+    // Upload to Cloudinary via service
+    const imageUrl = await this.cloudinaryService.uploadImage(file, 'categories');
 
     const result = await this.categoryService.create({
       ...createCategoryDto,
-      imageUrl: secure_url, // store only cloudinary URL
+      imageUrl, // store Cloudinary URL
     });
 
     return new ResponseDto(result, 'Category created successfully');
