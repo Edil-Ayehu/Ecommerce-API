@@ -14,10 +14,8 @@ import { CategoryModule } from './category/category.module';
 import { ShippingAddressModule } from './shipping-address/shipping-address.module';
 import { ConfigModule } from '@nestjs/config';
 import { LoggerMiddleware } from './common/middlewares/logger.middleware';
-import { UsersController } from './users/users.controller';
-import { AuthController } from './auth/auth.controller';
-import { ProductController } from './product/product.controller';
-import { CategoryController } from './category/category.controller';
+import { Throttle, ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
+import { CustomThrottlerGuard } from './common/guards/custom-throttler.guard';
 
 @Module({
   imports: [
@@ -33,7 +31,16 @@ import { CategoryController } from './category/category.controller';
       autoLoadEntities: true,
       synchronize: true, // disable in production
     })
-  }), UsersModule, AuthModule, ProductModule, OrderModule, WishlistModule, CartModule, BlogModule, CategoryModule, ShippingAddressModule],
+  }), UsersModule, AuthModule, ProductModule, OrderModule, WishlistModule, CartModule, BlogModule, CategoryModule, ShippingAddressModule,
+  ThrottlerModule.forRoot({
+    throttlers: [
+      {
+        ttl: 60000,
+        limit: 3,
+      },
+    ],
+  })
+],
   controllers: [],
   providers: [
     {
@@ -43,7 +50,11 @@ import { CategoryController } from './category/category.controller';
     {
       provide: APP_GUARD,
       useClass: RolesGuard,
-    }
+    },
+    {
+      provide: APP_GUARD,
+      useClass: CustomThrottlerGuard,
+    },
   ],
 })
 export class AppModule implements NestModule{

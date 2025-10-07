@@ -5,6 +5,7 @@ import { LoginDto } from './dto/login.dto';
 import { Public } from 'src/common/decorators/public.decorator';
 import { AuthGuard } from './guards/auth.guard';
 import { ResponseDto } from 'src/common/dto/response.dto';
+import { Throttle } from '@nestjs/throttler';
 
 @Controller('auth')
 export class AuthController {
@@ -21,6 +22,7 @@ export class AuthController {
 
     @Public()
     @Post('login')
+    // @Throttle({default: {limit: 3, ttl: 60}})
     @HttpCode(HttpStatus.OK)
     async login(@Body() loginDto: LoginDto) {
         const result = await this.authService.login(loginDto.email, loginDto.password);
