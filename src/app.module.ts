@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
@@ -13,6 +13,11 @@ import { BlogModule } from './blog/blog.module';
 import { CategoryModule } from './category/category.module';
 import { ShippingAddressModule } from './shipping-address/shipping-address.module';
 import { ConfigModule } from '@nestjs/config';
+import { LoggerMiddleware } from './common/middlewares/logger.middleware';
+import { UsersController } from './users/users.controller';
+import { AuthController } from './auth/auth.controller';
+import { ProductController } from './product/product.controller';
+import { CategoryController } from './category/category.controller';
 
 @Module({
   imports: [
@@ -41,4 +46,9 @@ import { ConfigModule } from '@nestjs/config';
     }
   ],
 })
-export class AppModule {}
+export class AppModule implements NestModule{
+  configure(consumer: MiddlewareConsumer) {
+    //  consumer.apply(LoggerMiddleware).forRoutes(UsersController,AuthController, ProductController,CategoryController);  // we can list the controllers to apply middleware in this way or we can apply the middleware to all controllers in a way found below.
+     consumer.apply(LoggerMiddleware).forRoutes('*'); // 👈 applies globally
+  }
+}
