@@ -42,11 +42,11 @@ export class ProductService {
         }
     }
 
-    findOne(id: number){
+    findOne(id: string){
         return  this.productRepository.findOne({where: {id}})
     }
 
-    async softDelete(id:number) {
+    async softDelete(id:string) {
         const product = await this.productRepository.findOne({
             where: {id}
         });
@@ -60,7 +60,7 @@ export class ProductService {
         }
     }
 
-    async deleteProduct(id: number) {
+    async deleteProduct(id: string) {
         const product = await this.productRepository.findOne({
             where: {id}
         });

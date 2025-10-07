@@ -1,4 +1,4 @@
-import { BadRequestException, Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Query, UploadedFile, UploadedFiles, UseInterceptors } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Delete, Get, Param, ParseIntPipe, ParseUUIDPipe, Post, Query, UploadedFile, UploadedFiles, UseInterceptors } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
@@ -77,14 +77,14 @@ export class ProductController {
     }
 
     @Get('detail/:id')
-    async findOne(@Param('id', ParseIntPipe) id:number) {
+    async findOne(@Param('id', new ParseUUIDPipe({version: '4'})) id:string) {
         const result = await this.productService.findOne(id)
         return new ResponseDto(result, "Product detail fetched successfully!")
     }
 
     @Delete('soft-delete/:id')
     @Roles('admin', 'superadmin')
-    async softDelete(@Param('id', ParseIntPipe) id:number) {
+    async softDelete(@Param('id', ParseIntPipe) id:string) {
         const result = await this.productService.softDelete(id)
         return new ResponseDto(result, 'Product deleted successfully!');
     }
@@ -92,7 +92,7 @@ export class ProductController {
 
     @Delete('delete-product/:id')
     @Roles('admin', 'superadmin')
-    async deleteProduct(@Param('id', ParseIntPipe) id:number) {
+    async deleteProduct(@Param('id', ParseIntPipe) id:string) {
         const result = await this.productService.deleteProduct(id)
         return new ResponseDto(result, "Product permanently deleted successfully!");
     }

@@ -1,4 +1,4 @@
-import { IsNumber, IsPositive, Min } from "class-validator"
+import { IsNumber, IsPositive, IsString, Min } from "class-validator"
 
 export class AddCartItemDto {
     @IsNumber()
@@ -6,7 +6,6 @@ export class AddCartItemDto {
     @Min(1)
     quantity: number = 1
 
-    @IsNumber()
-    @IsPositive()
-    productId: number
+    @IsString()
+    productId: string
 }

@@ -16,7 +16,7 @@ export class CartService {
     private productService: ProductService,
   ) {}
 
-  async add(userId: number, productId: number, quantity: number) {
+  async add(userId: number, productId: string, quantity: number) {
     // get user
     const user = await this.usersService.findById(userId)
 
@@ -48,7 +48,7 @@ export class CartService {
     return this.cartRepository.save({user, product, quantity})
   }
 
-  async remove(userId: number, productId: number) {
+  async remove(userId: number, productId: string) {
     const item = await this.cartRepository.findOne( {
         where: {
             user: {id: userId},

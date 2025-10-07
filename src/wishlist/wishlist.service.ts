@@ -16,7 +16,7 @@ export class WishlistService {
         private productService: ProductService,
     ) {}
 
-  async add(userId: number, productId: number) {
+  async add(userId: number, productId: string) {
     // get user
     const user = await this.usersService.findById(userId)
     
@@ -43,7 +43,7 @@ export class WishlistService {
     return this.wishlistRepo.save({user, product})
   }
 
-  async remove(userId: number, productId: number) {
+  async remove(userId: number, productId: string) {
     const item = await this.wishlistRepo.findOne({
         where: {
             user: {id: userId},

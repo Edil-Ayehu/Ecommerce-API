@@ -1,7 +1,6 @@
-import { IsNumber, IsPositive } from "class-validator";
+import { IsNumber, IsPositive, IsString } from "class-validator";
 
 export class AddWishlistDto {
-    @IsNumber()
-    @IsPositive()
-    productId: number
+    @IsString()
+    productId: string
 }

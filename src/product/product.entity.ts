@@ -4,8 +4,8 @@ import { Column, Entity, PrimaryGeneratedColumn, OneToMany, CreateDateColumn, Up
 
 @Entity()
 export class Product {
-    @PrimaryGeneratedColumn()
-    id: number
+    @PrimaryGeneratedColumn('uuid')
+    id: string
 
     @Column()
     name: string
