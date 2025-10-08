@@ -22,7 +22,7 @@ export class AuthController {
 
     @Public()
     @Post('login')
-    // @Throttle({default: {limit: 3, ttl: 60}})
+    @Throttle({default: {limit: 2, ttl: 10000}}) // used to override the global rate limit to a specific class or function
     @HttpCode(HttpStatus.OK)
     async login(@Body() loginDto: LoginDto) {
         const result = await this.authService.login(loginDto.email, loginDto.password);

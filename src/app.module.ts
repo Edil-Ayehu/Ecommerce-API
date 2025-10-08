@@ -14,7 +14,7 @@ import { CategoryModule } from './category/category.module';
 import { ShippingAddressModule } from './shipping-address/shipping-address.module';
 import { ConfigModule } from '@nestjs/config';
 import { LoggerMiddleware } from './common/middlewares/logger.middleware';
-import { Throttle, ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
+import { ThrottlerModule } from '@nestjs/throttler';
 import { CustomThrottlerGuard } from './common/guards/custom-throttler.guard';
 
 @Module({
@@ -35,7 +35,7 @@ import { CustomThrottlerGuard } from './common/guards/custom-throttler.guard';
   ThrottlerModule.forRoot({
     throttlers: [
       {
-        ttl: 60000,
+        ttl: 10000,
         limit: 3,
       },
     ],
