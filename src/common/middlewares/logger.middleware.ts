@@ -40,10 +40,10 @@ export class LoggerMiddleware implements NestMiddleware {
 
       console.log('==============================');
       console.log(`[${req.method}] ${req.originalUrl}`);
-      console.log('Status:', res.statusCode);
-      console.log('Body:', safeBody);
-      console.log('Response:', parsedResponse);
-      console.log(`Response Time: ${duration}ms`);
+      console.log('Status:', res.statusCode);  // logging response status
+      console.log('Body:', safeBody);  // logging request body
+      console.log('Response:', parsedResponse);  // logging response of the endpoints
+      console.log(`Response Time: ${duration}ms`);  // logging response time
       console.log('==============================');
     });
 
