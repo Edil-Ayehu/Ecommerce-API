@@ -12,26 +12,40 @@ import { RolesGuard } from './auth/guards/roles.guard';
 import { BlogModule } from './blog/blog.module';
 import { CategoryModule } from './category/category.module';
 import { ShippingAddressModule } from './shipping-address/shipping-address.module';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { LoggerMiddleware } from './common/middlewares/logger.middleware';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { CustomThrottlerGuard } from './common/guards/custom-throttler.guard';
-
+import envValidation from './config/env.validation';
 @Module({
   imports: [
-    ConfigModule.forRoot({ isGlobal: true }), // ✅ loads .env automatically
+    ConfigModule.forRoot({ 
+      isGlobal: true,
+      validationSchema: envValidation,
+    }),
     TypeOrmModule.forRootAsync({
-    useFactory: () => ({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+    useFactory: (configService:ConfigService) => ({
       type: 'postgres',
-      host: 'localhost',
-      port: 5433,
-      username: 'postgres',
-      database: 'ecommerce_db',
-      password: 'edilayehu',
+      host: configService.get('DB_HOST'),
+      port: configService.get<number>('DB_PORT'),
+      username: configService.get('DB_USERNAME'),
+      database: configService.get('DB_NAME'),
+      password: configService.get('DB_PASSWORD'),
       autoLoadEntities: true,
       synchronize: true, // disable in production
     })
-  }), UsersModule, AuthModule, ProductModule, OrderModule, WishlistModule, CartModule, BlogModule, CategoryModule, ShippingAddressModule,
+  }), 
+  UsersModule, 
+  AuthModule, 
+  ProductModule, 
+  OrderModule, 
+  WishlistModule, 
+  CartModule, 
+  BlogModule, 
+  CategoryModule, 
+  ShippingAddressModule,
   ThrottlerModule.forRoot({
     throttlers: [
       {
@@ -39,7 +53,7 @@ import { CustomThrottlerGuard } from './common/guards/custom-throttler.guard';
         limit: 3,
       },
     ],
-  })
+  }),
 ],
   controllers: [],
   providers: [
