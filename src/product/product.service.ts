@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { ILike, Repository } from 'typeorm';
+import { Between, ILike, LessThanOrEqual, MoreThanOrEqual, Repository } from 'typeorm';
 import { Product } from './product.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
@@ -22,16 +22,33 @@ export class ProductService {
 
 
     async findAll(paginationDto:PaginationDto){
-        const {page, limit,name} = paginationDto
+        const {page, limit,name, startDate, endDate} = paginationDto
 
-        const where = name 
-        ? { name: ILike(`%${name}%`) } // partial match on category name
-        : {};
+        const where: any = {};
+
+        // const where = name 
+        // ? { name: ILike(`%${name}%`) } // partial match on category name
+        // : {};
+
+          // Name filter
+         if (name) {
+             where.name = ILike(`%${name}%`);
+          }
+
+          // Date filter (assuming your entity has a field like 'createdAt')
+        if (startDate && endDate) {
+          where.createdAt = Between(new Date(startDate), new Date(endDate));
+        } else if (startDate) {
+          where.createdAt = MoreThanOrEqual(new Date(startDate));
+        } else if (endDate) {
+          where.createdAt = LessThanOrEqual(new Date(endDate));
+        }
         
         const [data, total] = await this.productRepository.findAndCount({
             where,
             skip: (page - 1) * limit,
             take: limit,
+            order: { createdAt: 'DESC' }, // optional
         })
 
         return {

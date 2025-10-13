@@ -1,5 +1,5 @@
 import { Type } from "class-transformer"
-import { IsOptional, IsPositive, IsString, Min } from "class-validator"
+import { IsDateString, IsOptional, IsPositive, IsString, Min } from "class-validator"
 
 export class PaginationDto {
     @IsOptional()
@@ -15,4 +15,12 @@ export class PaginationDto {
     @IsOptional()
     @IsString()
     name?:string // ✅ Allow product name filtering
+
+    @IsOptional()
+    @IsDateString()
+    startDate?:Date // e.g. 2025-10-01
+
+    @IsOptional()
+    @IsDateString()
+    endDate?:Date  // e.g. 2025-10-01
 }
