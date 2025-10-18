@@ -17,24 +17,31 @@ import { LoggerMiddleware } from './common/middlewares/logger.middleware';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { CustomThrottlerGuard } from './common/guards/custom-throttler.guard';
 import envValidation from './config/env.validation';
+import appConfig from './config/app.config';
+import databaseConfig from './config/database.config';
+
+const ENV = process.env.NODE_ENV
+
 @Module({
   imports: [
     ConfigModule.forRoot({ 
       isGlobal: true,
+      envFilePath: !ENV ? '.env' : `.env.${ENV.trim()}`,
       validationSchema: envValidation,
+      load: [appConfig, databaseConfig],
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
     useFactory: (configService:ConfigService) => ({
       type: 'postgres',
-      host: configService.get('DB_HOST'),
-      port: configService.get<number>('DB_PORT'),
-      username: configService.get('DB_USERNAME'),
-      database: configService.get('DB_NAME'),
-      password: configService.get('DB_PASSWORD'),
-      autoLoadEntities: true,
-      synchronize: true, // disable in production
+      host: configService.get('database.host'),
+      port: configService.get<number>('database.port'),
+      username: configService.get('database.username'),
+      database: configService.get('database.name'),
+      password: configService.get('database.password'),
+      autoLoadEntities: configService.get('database.autoLoadEntities'),
+      synchronize: configService.get('database.syncronize'), // disable in production
     })
   }), 
   UsersModule, 

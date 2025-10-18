@@ -3,7 +3,6 @@ import { Between, ILike, LessThanOrEqual, MoreThanOrEqual, Repository } from 'ty
 import { Product } from './product.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
-import { CreateProductDto } from './dto/create-product.dto';
 import { CategoryService } from 'src/category/category.service';
 
 @Injectable()
@@ -26,13 +25,9 @@ export class ProductService {
 
         const where: any = {};
 
-        // const where = name 
-        // ? { name: ILike(`%${name}%`) } // partial match on category name
-        // : {};
-
           // Name filter
          if (name) {
-             where.name = ILike(`%${name}%`);
+             where.name = ILike(`%${name}%`);  // Partial match on product name (ILike is case-insensitive)
           }
 
           // Date filter (assuming your entity has a field like 'createdAt')
