@@ -22,14 +22,17 @@ export class AuthService {
 
         const hashedPassword = await bcrypt.hash(user.password, 10);
         const newUser = await this.usersService.create({email: user.email, password: hashedPassword})
-        return {id: newUser.id, email: newUser.email}
+        return {
+            id: newUser.id, 
+            email: newUser.email,
+        }
     }
 
-    async login(email:string, password: string) {
+    async login(email:string, pass: string) {
         const user = await this.usersService.findByEmail(email)
         if(!user) throw new UnauthorizedException('Invalid credentials')
         
-        const match = await bcrypt.compare(password, user.password);
+        const match = await bcrypt.compare(pass, user.password);
         if(!match) throw new UnauthorizedException('The password is incorrect.please try again!')
         
         const token = jwt.sign(
@@ -42,9 +45,13 @@ export class AuthService {
             {expiresIn: '15m'},
         );
 
+         // Filter out sensitive fields
+         const {password, ...safeUser} = user;
+
         return {
-            user,
-            'access_token' : token}
+            safeUser,
+            'access_token' : token,
+        }
     }
 
     logout(token: string) {
