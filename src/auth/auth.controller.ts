@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, HttpCode, HttpStatus, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, HttpCode, HttpStatus, Req, UseGuards, Patch } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
@@ -6,6 +6,7 @@ import { Public } from 'src/common/decorators/public.decorator';
 import { AuthGuard } from './guards/auth.guard';
 import { ResponseDto } from 'src/common/dto/response.dto';
 import { Throttle } from '@nestjs/throttler';
+import { ChangePasswordDto } from './dto/change-password.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -43,4 +44,17 @@ export class AuthController {
     const token = authHeader?.split(' ')[1];
     return this.authService.logout(token);
 }
+
+    @Patch('changePassword')
+    @HttpCode(HttpStatus.OK)
+    async changePassword(
+        @Req() req,
+        @Body() changePasswordDto: ChangePasswordDto,
+    ) {
+        const userId = req.user.sub;
+        const { oldPassword, newPassword} = changePasswordDto
+        const result = await this.authService.changePassword(userId,oldPassword, newPassword);
+
+        return new ResponseDto(result, "Password changed successfully!");
+    }
 }

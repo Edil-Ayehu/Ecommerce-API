@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { UsersService } from 'src/users/users.service';
 import * as bcrypt from 'bcrypt';
 import * as jwt from 'jsonwebtoken';
@@ -65,5 +65,23 @@ if (this.blacklistedTokens.has(token)) {
 
     isTokenBlacklisted(token: string) {
         return this.blacklistedTokens.has(token);
+    }
+
+    async changePassword (userId: number, oldPassword:string, newPassword:string) {
+        const user = await this.usersService.findById(userId);
+
+        if(!user) throw new NotFoundException("User not found!");
+
+        const isMatch = await bcrypt.compare(oldPassword, user.password);
+
+        if(!isMatch) throw new BadRequestException("Old password is incorrect!");
+
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+        await this.usersService.updatePassword(userId, hashedPassword);
+
+        return {
+            message: "Password changed successfully!",
+        }
     }
 }

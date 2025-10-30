@@ -53,67 +53,13 @@ export class UsersService {
     return this.usersRepository.save(updatedUser);
   }
 
-// async getUserStats() {
-//   // Total users
-//   const totalUsers = await this.usersRepository.count();
+  async updatePassword(userId:number, newPassword:string) {
+    const user = await this.findById(userId);
 
-//   // Users with at least one order
-//   const usersWithOrders = await this.usersRepository
-//     .createQueryBuilder('user')
-//     .leftJoin('user.orders', 'order')
-//     .where('order.id IS NOT NULL')
-//     .getCount();
+    if(!user) throw new NotFoundException("User not found")!
 
-//   // Admins & Superadmins count
-//   const adminCount = await this.usersRepository.count({
-//     where: {role: UserRole.ADMIN}
-//   });
+    user.password = newPassword;
 
-//   const superAdminCount = await this.usersRepository.count({
-//     where: { role: UserRole.SUPERADMIN},
-//   });
-
-//   // Recently registered users (last 5)
-//   const recentUsers = await this.usersRepository.find({
-//     order: { createdAt: 'DESC' }, // if you add `createdAt`, use that instead
-//     take: 5,
-//     select: ['id', 'email', 'fullName', 'role'],
-//   });
-
-//   // Top customers by order count
-//   // const topCustomers = await this.usersRepository
-//   //   .createQueryBuilder('user')
-//   //   .leftJoinAndSelect('user.orders', 'order')
-//   //   .select('user.id', 'id')
-//   //   .addSelect('user.email', 'email')
-//   //   .addSelect('COUNT(order.id)', 'orderCount')
-//   //   .groupBy('user.id')
-//   //   .orderBy('orderCount', 'DESC')
-//   //   .limit(5)
-//   //   .getRawMany();
-
-//     // users.service.ts
-// const topCustomers = await this.usersRepository
-//   .createQueryBuilder('user')
-//   .leftJoin('user.orders', 'order')
-//   .select('user.id', 'id')
-//   .addSelect('user.email', 'email')
-//   .addSelect('COUNT(order.id)', 'orderCount') // computed field
-//   .groupBy('user.id')
-//   .addGroupBy('user.email')
-//   .orderBy('orderCount', 'DESC')
-//   .limit(5)
-//   .getRawMany(); // raw result, not mapped entity
-
-
-//   return {
-//     totalUsers,
-//     usersWithOrders,
-//     adminCount,
-//     superAdminCount,
-//     recentUsers,
-//     topCustomers,
-//   };
-// }
-
+    return await this.usersRepository.save(user);
+  }
 }
