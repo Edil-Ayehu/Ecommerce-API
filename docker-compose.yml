@@ -1,0 +1,58 @@
+version: '3.8'
+
+services:
+  # 🟢 NestJS App
+  app:
+    container_name: ecommerce_api
+    build: .
+    restart: always
+    ports:
+      - "${PORT:-3000}:3000"
+    env_file:
+      - .env
+    depends_on:
+      - db
+    networks:
+      - ecommerce_network
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    command: npm run start:dev
+
+  # 🟣 PostgreSQL Database
+  db:
+    image: postgres:16-alpine
+    container_name: ecommerce_db
+    restart: always
+    environment:
+      POSTGRES_USER: ${DB_USERNAME:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-edilayehu}
+      POSTGRES_DB: ${DB_NAME:-ecommerce_db}
+    ports:
+      - '5434:5432' # external:internal (5433 for your host)
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - ecommerce_network
+
+  # 🟠 Optional: pgAdmin UI
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: ecommerce_pgadmin
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "5050:80"
+    depends_on:
+      - db
+    networks:
+      - ecommerce_network
+
+networks:
+  ecommerce_network:
+    driver: bridge
+
+volumes:
+  postgres_data:
