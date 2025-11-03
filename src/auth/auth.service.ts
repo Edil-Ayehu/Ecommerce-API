@@ -2,6 +2,7 @@ import { BadRequestException, Injectable, NotFoundException, UnauthorizedExcepti
 import { UsersService } from 'src/users/users.service';
 import * as bcrypt from 'bcrypt';
 import * as jwt from 'jsonwebtoken';
+import { RegisterDto } from './dto/register.dto';
 
 const JWT_SECRET = 'thisIsMyJWTSecretCode'; // Ideally use config service
 
@@ -13,7 +14,7 @@ export class AuthService {
 
     private blacklistedTokens: Set<string> = new Set(); // simple in-memory blacklist
 
-    async register(user: {email: string, password:string}) {
+    async register(user: RegisterDto) {
         const existing = await this.usersService.findByEmail(user.email)
 
         if(existing) {
@@ -21,10 +22,16 @@ export class AuthService {
         }
 
         const hashedPassword = await bcrypt.hash(user.password, 10);
-        const newUser = await this.usersService.create({email: user.email, password: hashedPassword})
+        const newUser = await this.usersService.create({
+            email: user.email, 
+            password: hashedPassword, 
+            role: user.role,
+        });
+        
         return {
             id: newUser.id, 
             email: newUser.email,
+            role: newUser.role,
         }
     }
 

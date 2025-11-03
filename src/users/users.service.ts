@@ -14,7 +14,10 @@ export class UsersService {
   ) {}
 
   async create(registerDto: RegisterDto) {
-    return this.usersRepository.save(registerDto);
+    return this.usersRepository.save({
+      ...registerDto,
+      role: registerDto.role ?? UserRole.USER // ✅ Default to USER 
+    });
   }
 
   async findAllUsers(paginationDto: PaginationDto) {

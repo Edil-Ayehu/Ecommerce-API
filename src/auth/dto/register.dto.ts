@@ -1,4 +1,5 @@
-import { IsEmail, IsNotEmpty, IsString, Matches, MinLength } from "class-validator"
+import { IsEmail, IsEnum, IsNotEmpty, IsOptional, IsString, Matches, MinLength } from "class-validator"
+import { UserRole } from "src/users/user.entity"
 
 export class RegisterDto {
     @IsString()
@@ -13,4 +14,8 @@ export class RegisterDto {
             message: 'Password must contain at least one number, one uppercase letter and one special character',
         })
     password: string
+
+    @IsOptional()
+    @IsEnum(UserRole, { message: 'Role must be one of: user, admin, superadmin' })
+    role?: UserRole
 }
