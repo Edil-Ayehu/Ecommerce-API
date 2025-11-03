@@ -76,6 +76,14 @@ if (this.blacklistedTokens.has(token)) {
 
         if(!isMatch) throw new BadRequestException("Old password is incorrect!");
 
+        // ✅ Check if new password is same as old password
+        if(oldPassword === newPassword) throw new BadRequestException("New password cannot be the same as the old password!")
+        // const isSamePassword = await bcrypt.compare(newPassword, user.password);
+        // if (isSamePassword) {
+        //     throw new BadRequestException("New password cannot be the same as the old password!");
+        // }
+
+
         const hashedPassword = await bcrypt.hash(newPassword, 10);
 
         await this.usersService.updatePassword(userId, hashedPassword);
