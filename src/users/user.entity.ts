@@ -1,6 +1,7 @@
 import { Order } from "src/order/order.entity";
 import { ShippingAddress } from "src/shipping-address/shipping-address.entity";
-import { Column, Entity, PrimaryGeneratedColumn, OneToMany, CreateDateColumn, UpdateDateColumn } from "typeorm";
+import { Column, Entity, PrimaryGeneratedColumn, OneToMany, CreateDateColumn, UpdateDateColumn, DeleteDateColumn } from "typeorm";
+import { UUID } from "typeorm/driver/mongodb/bson.typings";
 
 export enum UserRole {
     USER = 'user',
@@ -10,10 +11,10 @@ export enum UserRole {
 
 @Entity()
 export class User {
-    @PrimaryGeneratedColumn()
-    id: number
+    @PrimaryGeneratedColumn('uuid')
+    id: string
 
-    @Column({unique: true})
+    @Column()
     email: string
 
     @Column()
@@ -49,4 +50,7 @@ export class User {
 
     @UpdateDateColumn()
     updatedDate:Date
+
+    @DeleteDateColumn()
+    deletedAt:Date
 }

@@ -21,13 +21,13 @@ export class UsersService {
   }
 
   async findAllUsers(paginationDto: PaginationDto) {
-    const [data, total] = await this.usersRepository.findAndCount({
+    const [users, total] = await this.usersRepository.findAndCount({
       skip: (paginationDto.page - 1) * paginationDto.limit,
       take: paginationDto.limit,
     })
 
     return {
-      data,
+      users,
       total, 
       page: paginationDto.page,
       limit: paginationDto.limit,
@@ -36,18 +36,18 @@ export class UsersService {
 
   async findByEmail(email: string) {
     return this.usersRepository.findOne({
-      where: { email },
+      where: { email , deletedAt: undefined},
     });
   }
 
-  async findById(id: number) {
+  async findById(id: string) {
     return await this.usersRepository.findOne({
       where: { id },
     });
 
   }
 
-  async updateProfile(userId: number, updateProfileDto: UpdateProfileDto) {
+  async updateProfile(userId: string, updateProfileDto: UpdateProfileDto) {
     const user = await this.usersRepository.findOne({where: {id: userId}})
     if(!user) throw new NotFoundException("User Not Found");
 
@@ -56,7 +56,7 @@ export class UsersService {
     return this.usersRepository.save(updatedUser);
   }
 
-  async updatePassword(userId:number, newPassword:string) {
+  async updatePassword(userId:string, newPassword:string) {
     const user = await this.findById(userId);
 
     if(!user) throw new NotFoundException("User not found")!
@@ -64,5 +64,18 @@ export class UsersService {
     user.password = newPassword;
 
     return await this.usersRepository.save(user);
+  }
+
+  async deleteUser(id: string) {
+    const user = await this.findById(id);
+
+    if(!user) throw new NotFoundException("User not found with the given Id!");
+
+    await this.usersRepository.softDelete(id);
+
+    return {
+      id,
+      deleted: true,
+    }
   }
 }

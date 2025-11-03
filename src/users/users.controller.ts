@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Patch, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Query } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
 import { UpdateProfileDto } from './dto/update-profile.dto';
@@ -23,6 +23,12 @@ export class UsersController {
     async UpdateProfile(@Body() updateProfileDto: UpdateProfileDto, @ActiveUser('sub') userId) {
         const result = await this.usersService.updateProfile(userId, updateProfileDto)
         return new ResponseDto(result, "Profile updated successfully!");
+    }
+
+    @Delete(':id')
+    async deleteUser(@Param('id') id:string) {
+        const result = await this.usersService.deleteUser(id);
+        return new ResponseDto(result, 'User deleted successfully!');
     }
 
     // @Get('stats')

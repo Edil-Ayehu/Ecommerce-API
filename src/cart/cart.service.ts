@@ -16,7 +16,7 @@ export class CartService {
     private productService: ProductService,
   ) {}
 
-  async add(userId: number, productId: string, quantity: number) {
+  async add(userId: string, productId: string, quantity: number) {
     // get user
     const user = await this.usersService.findById(userId)
 
@@ -48,7 +48,7 @@ export class CartService {
     return this.cartRepository.save({user, product, quantity})
   }
 
-  async remove(userId: number, productId: string) {
+  async remove(userId: string, productId: string) {
     const item = await this.cartRepository.findOne( {
         where: {
             user: {id: userId},
@@ -69,7 +69,7 @@ export class CartService {
     }
   }
 
-  async findCartItems(userId: number, paginationDto: PaginationDto) {
+  async findCartItems(userId: string, paginationDto: PaginationDto) {
     const [data, total] = await this.cartRepository.findAndCount({
         where: {user: {id: userId}},
         relations: ['product'],
@@ -86,7 +86,7 @@ export class CartService {
   }
 
   // clear all items in the user's cart
-  async clearCartForUser(userId: number) {
+  async clearCartForUser(userId: string) {
     const items = await this.cartRepository.find({
       where: {user: {id: userId}}
     })

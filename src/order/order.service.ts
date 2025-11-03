@@ -26,7 +26,7 @@ export class OrderService {
         private cartService: CartService,
     ){}
 
-    async checkout(userId:number, checkoutDto: CheckoutDto) {
+    async checkout(userId:string, checkoutDto: CheckoutDto) {
         const cartItems = await this.cartRepository.find({
             where: {user: {id: userId}},
             relations: ['product','user']
@@ -95,7 +95,7 @@ export class OrderService {
     }
 
 
-    async findMyOrders(userId: number, paginationDto: PaginationDto) {
+    async findMyOrders(userId: string, paginationDto: PaginationDto) {
         const [data, total] = await this.orderRepository.findAndCount({
             where: {user: {id: userId}},
             relations: ['user', 'items'],

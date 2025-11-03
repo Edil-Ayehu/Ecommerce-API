@@ -23,7 +23,7 @@ export class ShippingAddressController {
 
     @Get()
     async findAll(
-        @ActiveUser('sub') userId: number,
+        @ActiveUser('sub') userId: string,
         @Query() paginationDto: PaginationDto
     ) {
         const result = await this.shippingAddressService.findUserAddresses(userId, paginationDto)
@@ -38,7 +38,7 @@ export class ShippingAddressController {
 
     @Delete('deleteAddress/:id')
     async remove(
-        @ActiveUser('sub') userId: number,
+        @ActiveUser('sub') userId: string,
         @Param('id', ParseIntPipe) id: number,
     ) {
         const result =await this.shippingAddressService.delete(userId, id)

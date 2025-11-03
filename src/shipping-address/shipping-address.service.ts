@@ -29,7 +29,7 @@ export class ShippingAddressService {
         return this.shippingAddressRepository.save(updatedAddress);
     }
 
-    async findUserAddresses(userId:number, paginationDto: PaginationDto){
+    async findUserAddresses(userId:string, paginationDto: PaginationDto){
         const {page, limit} = paginationDto;
 
         const [docs, total] = await this.shippingAddressRepository.findAndCount({
@@ -47,7 +47,7 @@ export class ShippingAddressService {
         }
     }
 
-    async delete(userId: number, addressId:number){
+    async delete(userId: string, addressId:number){
         const address = await this.shippingAddressRepository.findOne({
             where: {
                 id: addressId,

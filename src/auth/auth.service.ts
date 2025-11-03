@@ -74,7 +74,7 @@ if (this.blacklistedTokens.has(token)) {
         return this.blacklistedTokens.has(token);
     }
 
-    async changePassword (userId: number, oldPassword:string, newPassword:string) {
+    async changePassword (userId: string, oldPassword:string, newPassword:string) {
         const user = await this.usersService.findById(userId);
 
         if(!user) throw new NotFoundException("User not found!");

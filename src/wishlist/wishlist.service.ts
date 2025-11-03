@@ -16,7 +16,7 @@ export class WishlistService {
         private productService: ProductService,
     ) {}
 
-  async add(userId: number, productId: string) {
+  async add(userId: string, productId: string) {
     // get user
     const user = await this.usersService.findById(userId)
     
@@ -43,7 +43,7 @@ export class WishlistService {
     return this.wishlistRepo.save({user, product})
   }
 
-  async remove(userId: number, productId: string) {
+  async remove(userId: string, productId: string) {
     const item = await this.wishlistRepo.findOne({
         where: {
             user: {id: userId},
@@ -65,7 +65,7 @@ export class WishlistService {
     }
   }
 
-  async findAllForUser(userId: number, paginationDto: PaginationDto) {
+  async findAllForUser(userId: string, paginationDto: PaginationDto) {
     const {page, limit} = paginationDto
     const [items, total] = await this.wishlistRepo.findAndCount({
         where: { user: {id: userId}},

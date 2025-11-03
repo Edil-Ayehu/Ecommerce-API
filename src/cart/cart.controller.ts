@@ -22,7 +22,7 @@ export class CartController {
 
     @Delete('removeFromCart/:productId')
     async remove(
-        @Param('productId', ParseIntPipe) productId: string,
+        @Param('productId') productId: string,
         @ActiveUser('sub') userId
     ) {
         const result = await this.cartService.remove(userId, productId)
