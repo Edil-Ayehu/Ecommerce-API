@@ -72,6 +72,28 @@ export class ProductService {
       }
     }
 
+    async filterProductByCategory(categoryId:number, paginationDto: PaginationDto) {
+      const { page, limit, name, startDate, endDate} = paginationDto;
+
+      const category = await this.categoryService.findOne(categoryId);
+
+      if(!category) throw new NotFoundException("Category not found with the given id");
+
+      const [products, total] = await this.productRepository.findAndCount({
+        where: {category: {id: categoryId}},
+        skip: (page - 1) * limit,
+        take: limit,
+        order: { createdAt: 'DESC'},
+      });
+
+      return {
+        products,
+        total,
+        page,
+        limit,
+      }
+    }
+
     findOne(id: string){
         return  this.productRepository.findOne({where: {id}})
     }

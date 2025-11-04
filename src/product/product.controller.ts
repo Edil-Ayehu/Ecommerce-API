@@ -113,4 +113,15 @@ export class ProductController {
      return new ResponseDto(result, "Product stats fetched successfully!");
     }
 
+
+    @Get('filter-product-by-category/:categoryId')
+    async filterProductByCategory(
+      @Query() paginationDto: PaginationDto,
+      @Param('categoryId', ParseIntPipe) categoryId: number,
+    ) {
+      const result = await this.productService.filterProductByCategory(categoryId, paginationDto);
+
+      return new ResponseDto(result, 'Category products fetched successfully!');
+    }
+
 }
