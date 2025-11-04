@@ -39,7 +39,7 @@ export class ProductService {
           where.createdAt = LessThanOrEqual(new Date(endDate));
         }
         
-        const [data, total] = await this.productRepository.findAndCount({
+        const [products, total] = await this.productRepository.findAndCount({
             where,
             skip: (page - 1) * limit,
             take: limit,
@@ -47,11 +47,29 @@ export class ProductService {
         })
 
         return {
-            data,
+            products,
             total,
             page,
             limit,
         }
+    }
+
+    async fetchFeaturedProducts (paginationDto: PaginationDto) {
+      const { page, limit, name, startDate, endDate} = paginationDto;
+
+      const [featuredProducts, total] = await this.productRepository.findAndCount({
+          where: {isFeatured: true},
+          skip: (page - 1) * limit,
+          take: limit,
+          order: { createdAt: 'DESC'},
+      });
+
+      return {
+        featuredProducts,
+        total,
+        page,
+        limit,
+      }
     }
 
     findOne(id: string){

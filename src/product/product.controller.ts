@@ -76,6 +76,14 @@ export class ProductController {
         return new ResponseDto(result, "Products fetched successfully!")
     }
 
+    @Get('fetch-featured-products')
+    async fetchFeaturedProducts(
+      @Query() paginationDto: PaginationDto,
+    ) {
+      const result = await this.productService.fetchFeaturedProducts(paginationDto);
+      return new ResponseDto(result, 'Featured products fetched successfully!');
+    }
+
     @Get('detail/:id')
     async findOne(@Param('id', new ParseUUIDPipe({version: '4'})) id:string) {
         const result = await this.productService.findOne(id)
