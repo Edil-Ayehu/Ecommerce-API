@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Query } from '@nestjs/common';
 import { BlogService } from './blog.service';
 import { CreateBlogDto } from './dto/create-blog.dto';
 import { UpdateBlogDto } from './dto/update-blog.dto';
@@ -44,5 +44,14 @@ export class BlogController {
     async findAll(@Body() paginationDto:PaginationDto) {
         const result = await  this.blogService.findAll(paginationDto)
         return new ResponseDto(result, "Blogs fetched successfully");
+    }
+
+    @Get('filterBlogByTag/:tag')
+    async filterByTag(
+        @Param('tag') tag: string,
+        @Query() paginationDto: PaginationDto,
+    ) {
+        const result = await this.blogService.findByTag(tag, paginationDto);
+        return new ResponseDto(result, 'Filtered blog fetched successfully!');
     }
 }
