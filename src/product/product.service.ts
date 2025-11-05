@@ -57,8 +57,18 @@ export class ProductService {
     async fetchFeaturedProducts (paginationDto: PaginationDto) {
       const { page, limit, name, startDate, endDate} = paginationDto;
 
+      const where: any = {};
+
+       // Name filter
+         if (name) {
+             where.name = ILike(`%${name}%`);  // Partial match on product name (ILike is case-insensitive)
+          }
+
+          where.isFeatured = true;
+
       const [featuredProducts, total] = await this.productRepository.findAndCount({
-          where: {isFeatured: true},
+          // where: {isFeatured: true},
+          where,
           skip: (page - 1) * limit,
           take: limit,
           order: { createdAt: 'DESC'},
