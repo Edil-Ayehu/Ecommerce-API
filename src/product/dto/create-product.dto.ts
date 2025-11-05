@@ -28,8 +28,7 @@ export class CreateProductDto {
 
     @IsInt()
     @IsPositive()
-    @Type(() => Number) // converts string to number
-    categoryId: number
+    categoryId: string
 
     @IsNumber({allowNaN: false, allowInfinity: false})
     @Type(() => Number)

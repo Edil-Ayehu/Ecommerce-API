@@ -21,7 +21,7 @@ export class BlogController {
 
     @Patch('update-blog/:id')
     @Roles('admin', 'superadmin')
-    async updateBlog(@Param('id', ParseIntPipe) id: number,
+    async updateBlog(@Param('id') id: string,
         @Body() updateBlogDto: UpdateBlogDto) {
         const result = await this.blogService.updateBlog(id,updateBlogDto);
         return new ResponseDto(result, "Blog updated successfully");
@@ -29,13 +29,13 @@ export class BlogController {
 
     @Delete('delete-blog/:id')
     @Roles('admin', 'superadmin')
-    async  deleteBlog(@Param('id', ParseIntPipe) id:number) {
+    async  deleteBlog(@Param('id') id:string) {
         const result = await this.blogService.deleteBlog(id);
         return new ResponseDto(result, "Blog deleted successfully");
     }
 
     @Get(':id')
-    async findOne(@Param('id', ParseIntPipe) id: number) {
+    async findOne(@Param('id') id: string) {
         const result =  await this.blogService.findOne(id)
         return new ResponseDto(result, "Blog fetched successfully");
     }

@@ -40,7 +40,7 @@ async create(createCategoryDto: CreateCategoryDto & { imageUrl?: string }) {
         }
     }
 
-    async findOne(id:number) {
+    async findOne(id:string) {
         const category = await this.categoryRepository.findOne({
             where: {id}
         })
@@ -50,7 +50,7 @@ async create(createCategoryDto: CreateCategoryDto & { imageUrl?: string }) {
         return category;
     }
 
-    async update(id:number, updateCategoryDto:UpdateCategoryDto) {
+    async update(id:string, updateCategoryDto:UpdateCategoryDto) {
         const category = await this.findOne(id)
 
         if(!category) throw new NotFoundException("Category Not Found")
@@ -60,7 +60,7 @@ async create(createCategoryDto: CreateCategoryDto & { imageUrl?: string }) {
         return this.categoryRepository.save(updatedCategory);
     }
 
-    async remove(id:number) {
+    async remove(id:string) {
         const category = await this.findOne(id)
 
         if(!category) throw new NotFoundException("Category Not Found")

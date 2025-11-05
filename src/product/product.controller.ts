@@ -117,7 +117,7 @@ export class ProductController {
     @Get('filter-product-by-category/:categoryId')
     async filterProductByCategory(
       @Query() paginationDto: PaginationDto,
-      @Param('categoryId', ParseIntPipe) categoryId: number,
+      @Param('categoryId') categoryId: string,
     ) {
       const result = await this.productService.filterProductByCategory(categoryId, paginationDto);
 

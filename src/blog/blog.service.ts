@@ -18,7 +18,7 @@ export class BlogService {
         return this.blogRepository.save(blog)
     }
 
-    async updateBlog(id:number, updateBlogDto: UpdateBlogDto) {
+    async updateBlog(id:string, updateBlogDto: UpdateBlogDto) {
         const blog = await this.blogRepository.findOne({where: {id}})
         if(!blog) throw new NotFoundException('Blog Not Found');
 
@@ -27,7 +27,7 @@ export class BlogService {
         return this.blogRepository.save(updatedBlog);
     }
 
-    async deleteBlog(id:number) {
+    async deleteBlog(id:string) {
         const blog = await this.blogRepository.findOne({where: {id}})
         if(!blog) throw new NotFoundException('Blog Not Found');
 
@@ -38,7 +38,7 @@ export class BlogService {
         }
     }
 
-    async findOne(id:number) {
+    async findOne(id:string) {
         const blog = await this.blogRepository.findOne({where: {id}})
         if(!blog) throw new NotFoundException('Blog Not Found with this id!');
 

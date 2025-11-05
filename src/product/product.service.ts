@@ -82,7 +82,7 @@ export class ProductService {
       }
     }
 
-    async filterProductByCategory(categoryId:number, paginationDto: PaginationDto) {
+    async filterProductByCategory(categoryId:string, paginationDto: PaginationDto) {
       const { page, limit, name, startDate, endDate} = paginationDto;
 
       const category = await this.categoryService.findOne(categoryId);

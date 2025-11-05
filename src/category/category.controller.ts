@@ -49,21 +49,21 @@ export class CategoryController {
     }
 
     @Get(':id')
-    async findOne(@Param('id', ParseIntPipe) id:number) {
+    async findOne(@Param('id') id:string) {
         const result = await this.categoryService.findOne(id)
         return new ResponseDto(result,'Category fetched successfully');
     }
 
     @Patch('update-category/:id')
     @Roles('admin','superadmin')
-    async update(@Param('id',ParseIntPipe) id:number, @Body() updateCategoryDto: UpdateCategoryDto){
+    async update(@Param('id',ParseIntPipe) id:string, @Body() updateCategoryDto: UpdateCategoryDto){
         const result = await this.categoryService.update(id,updateCategoryDto)
         return new ResponseDto(result,'Category updated successfully')
     }
 
     @Delete('delete-category/:id')
     @Roles('admin','superadmin')
-    async remove(@Param('id', ParseIntPipe) id:number) {
+    async remove(@Param('id', ParseIntPipe) id:string) {
         const result = await this.categoryService.remove(id)
         return new ResponseDto(result,'Category deleted successfully');
     }
