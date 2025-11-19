@@ -24,10 +24,12 @@ export class UsersService {
     const [users, total] = await this.usersRepository.findAndCount({
       skip: (paginationDto.page - 1) * paginationDto.limit,
       take: paginationDto.limit,
-    })
+    });
+
+    const sanitizedUsers = users.map(({password, ...rest}) => rest);
 
     return {
-      users,
+      sanitizedUsers,
       total, 
       page: paginationDto.page,
       limit: paginationDto.limit,
